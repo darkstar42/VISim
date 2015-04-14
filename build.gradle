@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+def jmonkeyengine_version = '3.0'
+
+jar {
+	baseName = 'visim'
+	version = '0.0.1'
+    manifest {
+        attributes 'Main-Class': 'Test'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+repositories {
+	mavenCentral()
+    maven {
+        url "http://updates.jmonkeyengine.org/maven/"
+    }
+}
+
+dependencies {
+    compile "com.jme3:jme3-core:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-effects:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-networking:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-plugins:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-jogg:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-terrain:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-blender:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-jbullet:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-niftygui:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-desktop:$jmonkeyengine_version.+"
+    compile "com.jme3:jme3-lwjgl:$jmonkeyengine_version.+"
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.1'
+}
+
