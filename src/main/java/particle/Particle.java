@@ -11,14 +11,13 @@ public class Particle {
     private int lifetime = -1;
     private int age = 0;
 
-    private List<Vector3f> positions = new ArrayList<>();
-    private List<Vector3f> velocities = new ArrayList<>();
+    private Vector3f position;
+    private Vector3f velocity;
 
     public Particle(Vector3f position, Vector3f velocity, double mass) {
         this.mass = mass;
-
-        positions.add(position);
-        velocities.add(velocity);
+        this.velocity = new Vector3f(velocity);
+        this.position = new Vector3f(position);
     }
 
     public Particle(Vector3f position, Vector3f velocity, double mass, int lifetime) {
@@ -40,10 +39,25 @@ public class Particle {
     }
 
     public Vector3f getPosition() {
-        return positions.get(0);
+        return new Vector3f(position);
     }
 
     public Vector3f getVelocity() {
-        return velocities.get(0);
+        return new Vector3f(velocity);
+    }
+
+    public void update(Vector3f position, Vector3f velocity) {
+        setPosition(position);
+        setVelocity(velocity);
+
+        age++;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = new Vector3f(position);
+    }
+
+    public void setVelocity(Vector3f velocity) {
+        this.velocity = new Vector3f(velocity);
     }
 }

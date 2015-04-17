@@ -17,9 +17,11 @@ public class ParticleSystem {
 
     private ParticleEmitter particleEmitter;
 
-    private int spawningRate = 100;
+    private int spawningRate = 50;
 
     private Geometry geometry;
+
+    private float timestep = 0.01f;
 
     public ParticleSystem(ParticleEmitter particleEmitter) {
         this.particleEmitter = particleEmitter;
@@ -36,6 +38,27 @@ public class ParticleSystem {
     }
 
     public void update() {
+        for (int i = 0; i < getNumParticles(); i++) {
+            Particle particle = getParticle(i);
+
+            Vector3f force = new Vector3f();
+
+            force = force.add(0, (float) (-1.0 * particle.getMass() * 9.80665f), 0);
+
+            Vector3f oldPosition = particle.getPosition();
+            Vector3f oldVelocity = particle.getVelocity();
+
+            Vector3f newPosition = oldPosition.add(particle.getVelocity().mult(timestep));
+            Vector3f newVelocity = oldVelocity.add(force.mult(timestep));
+
+            particle.update(newPosition, newVelocity);
+
+            if (particle.getLifetime() != -1 && particle.getAge() > particle.getLifetime()) {
+                particles.remove(i);
+                i--;
+            }
+        }
+
         for (int i = 0; i < spawningRate; i++) {
             Particle particle = particleEmitter.generateParticle();
             particles.add(particle);
@@ -69,24 +92,6 @@ public class ParticleSystem {
             Geometry geo = new Geometry("particles", mesh);
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setBoolean("VertexColor", true);
-
-            float[] colorArray = new float[getNumParticles() * 4];
-
-            int colorIndex = 0;
-
-            for (int i = 0; i < getNumParticles(); i++) {
-                // Red value (is increased by .2 on each next vertex here)
-                colorArray[colorIndex++] = 0.1f + (.01f * i);
-                // Green value (is reduced by .2 on each next vertex)
-                colorArray[colorIndex++] = 0.9f - (0.01f * i);
-                // Blue value (remains the same in our case)
-                colorArray[colorIndex++] = 0.5f;
-                // Alpha value (no transparency set here)
-                colorArray[colorIndex++] = 1.0f;
-            }
-
-            mesh.setBuffer(VertexBuffer.Type.Color, 4, colorArray);
-
             geo.setMaterial(mat);
 
             geometry = geo;
@@ -106,13 +111,17 @@ public class ParticleSystem {
         int colorIndex = 0;
 
         for (int i = 0; i < getNumParticles(); i++) {
-            // Red value (is increased by .2 on each next vertex here)
-            colorArray[colorIndex++] = 0.1f + (.01f * i);
-            // Green value (is reduced by .2 on each next vertex)
-            colorArray[colorIndex++] = 0.9f - (0.01f * i);
-            // Blue value (remains the same in our case)
-            colorArray[colorIndex++] = 0.5f;
-            // Alpha value (no transparency set here)
+            Particle particle = getParticle(i);
+
+            float ratio = 1.0f;
+
+            if (particle.getLifetime() > 0) {
+                ratio = (1.0f * particle.getAge()) / particle.getLifetime();
+            }
+
+            colorArray[colorIndex++] = ratio;
+            colorArray[colorIndex++] = 1.0f - ratio;
+            colorArray[colorIndex++] = 0.0f;
             colorArray[colorIndex++] = 1.0f;
         }
 

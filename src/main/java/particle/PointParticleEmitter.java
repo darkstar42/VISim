@@ -11,30 +11,30 @@ public class PointParticleEmitter implements ParticleEmitter {
     private Vector3f initialVelocity;
 
     private int particleLifetime;
+    private float particleMass;
 
     public PointParticleEmitter(Vector3f location) {
         this.location = new Vector3f(location);
         this.initialVelocity = new Vector3f(-0.5f, 0, -0.5f);
         this.particleLifetime = 300;
+        this.particleMass = 0.2f;
     }
 
     @Override
     public Particle generateParticle() {
+        float randomX, randomY, randomZ;
+
         Vector3f particleLocation = new Vector3f(location);
         Vector3f particleVelocity = new Vector3f();
 
-        float randomX = (float) randomGenerator.nextDouble() - 0.5f;
-        float randomY = (float) randomGenerator.nextDouble() - 0.5f;
-        float randomZ = (float) randomGenerator.nextDouble() - 0.5f;
+        randomX = (float) randomGenerator.nextDouble() - 0.5f;
+        randomY = (float) randomGenerator.nextDouble() - 0.5f;
+        randomZ = (float) randomGenerator.nextDouble() - 0.5f;
 
         particleVelocity.x = randomX + initialVelocity.x;
         particleVelocity.y = randomY + initialVelocity.y;
         particleVelocity.z = randomZ + initialVelocity.z;
 
-        particleLocation.z += randomZ * 5.0;
-        particleLocation.x += randomX * 5.0;
-        particleLocation.y += randomY * 5.0;
-
-        return new Particle(particleLocation, particleVelocity, particleLifetime);
+        return new Particle(particleLocation, particleVelocity, particleMass, particleLifetime);
     }
 }

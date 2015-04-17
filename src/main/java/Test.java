@@ -1,12 +1,6 @@
 import com.jme3.app.SimpleApplication;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.shape.Box;
-import com.jme3.util.BufferUtils;
 import particle.ParticleEmitter;
 import particle.ParticleSystem;
 import particle.PointParticleEmitter;
@@ -17,6 +11,7 @@ import particle.PointParticleEmitter;
  * moving the mouse and pressing the WASD keys.
  */
 public class Test extends SimpleApplication {
+    ParticleSystem particleSystem;
 
     public static void main(String[] args) {
         Test app = new Test();
@@ -26,19 +21,18 @@ public class Test extends SimpleApplication {
     @Override
     public void simpleInitApp() {
         ParticleEmitter particleEmitter = new PointParticleEmitter(new Vector3f(0, 0, 0));
-        ParticleSystem particleSystem = new ParticleSystem(particleEmitter);
+        particleSystem = new ParticleSystem(particleEmitter);
 
         Geometry geometry = particleSystem.getGeometry(assetManager);
 
         rootNode.attachChild(geometry);
+    }
+
+    @Override
+    public void update() {
+        super.update(); // makes sure to execute AppTasks
 
         particleSystem.update();
-        particleSystem.draw();
-
-        for (int i = 0; i < 1000; i++) {
-            particleSystem.update();
-        }
-
         particleSystem.draw();
     }
 }
