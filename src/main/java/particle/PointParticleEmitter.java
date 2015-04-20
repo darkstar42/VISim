@@ -21,7 +21,7 @@ public class PointParticleEmitter implements ParticleEmitter {
     }
 
     @Override
-    public Particle generateParticle() {
+    public Particle generateParticle(long id) {
         float randomX, randomY, randomZ;
 
         Vector3f particleLocation = new Vector3f(location);
@@ -35,6 +35,6 @@ public class PointParticleEmitter implements ParticleEmitter {
         particleVelocity.y = randomY + initialVelocity.y;
         particleVelocity.z = randomZ + initialVelocity.z;
 
-        return new Particle(particleLocation, particleVelocity, particleMass, particleLifetime);
+        return new Particle(id, particleLocation, particleVelocity, particleMass, particleLifetime);
     }
 }

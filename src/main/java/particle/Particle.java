@@ -2,10 +2,9 @@ package particle;
 
 import com.jme3.math.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Particle {
+    private long id;
+
     private double mass;
 
     private int lifetime = -1;
@@ -14,16 +13,22 @@ public class Particle {
     private Vector3f position;
     private Vector3f velocity;
 
-    public Particle(Vector3f position, Vector3f velocity, double mass) {
+    public Particle(long id, Vector3f position, Vector3f velocity, double mass) {
+        this.id = id;
         this.mass = mass;
-        this.velocity = new Vector3f(velocity);
-        this.position = new Vector3f(position);
+
+        setPosition(position);
+        setVelocity(velocity);
     }
 
-    public Particle(Vector3f position, Vector3f velocity, double mass, int lifetime) {
-        this(position, velocity, mass);
+    public Particle(long id, Vector3f position, Vector3f velocity, double mass, int lifetime) {
+        this(id, position, velocity, mass);
 
         this.lifetime = lifetime;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public double getMass() {
@@ -39,11 +44,11 @@ public class Particle {
     }
 
     public Vector3f getPosition() {
-        return new Vector3f(position);
+        return position;
     }
 
     public Vector3f getVelocity() {
-        return new Vector3f(velocity);
+        return velocity;
     }
 
     public void update(Vector3f position, Vector3f velocity) {
@@ -54,10 +59,16 @@ public class Particle {
     }
 
     public void setPosition(Vector3f position) {
-        this.position = new Vector3f(position);
+        this.position = position;
     }
 
     public void setVelocity(Vector3f velocity) {
-        this.velocity = new Vector3f(velocity);
+        this.velocity = velocity;
+    }
+
+    public float getDistance(Particle distParticle) {
+        Vector3f distPositoin = distParticle.getPosition();
+
+        return distPositoin.subtract(position).length();
     }
 }

@@ -7,6 +7,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
+import particle.neighbor.BruteForce;
+import particle.neighbor.SpatialHashing;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -17,11 +19,15 @@ public class ParticleSystem {
 
     private ParticleEmitter particleEmitter;
 
-    private int spawningRate = 50;
+    private int spawningRate = 25;
 
     private Geometry geometry;
 
     private float timestep = 0.01f;
+
+    private long particleNumber = 0;
+
+    private SpatialHashing neighborHelper = new SpatialHashing();
 
     public ParticleSystem(ParticleEmitter particleEmitter) {
         this.particleEmitter = particleEmitter;
@@ -35,6 +41,10 @@ public class ParticleSystem {
 
     public int getNumParticles() {
         return particles.size();
+    }
+
+    protected long getNextParticleId() {
+        return particleNumber++;
     }
 
     public void update() {
@@ -60,9 +70,15 @@ public class ParticleSystem {
         }
 
         for (int i = 0; i < spawningRate; i++) {
-            Particle particle = particleEmitter.generateParticle();
+            Particle particle = particleEmitter.generateParticle(getNextParticleId());
             particles.add(particle);
         }
+
+        neighborHelper.updateNeighbors(particles);
+    }
+
+    public List<Particle> getInteractionParticles(Particle particle) {
+        return null;
     }
 
     private Vector3f[] getVertices() {

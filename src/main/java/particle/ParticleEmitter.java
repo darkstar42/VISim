@@ -1,5 +1,5 @@
 package particle;
 
 public interface ParticleEmitter {
-    Particle generateParticle();
+    Particle generateParticle(long id);
 }
