@@ -6,6 +6,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
+import java.util.UUID;
+
 public class Plane extends Element {
     Geometry geometry;
 
@@ -27,7 +29,7 @@ public class Plane extends Element {
         material.setColor("Color", new ColorRGBA(0.3f, 0.3f, 0.3f, 0.25f));
         //material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
-        geometry = new Geometry("plane", new Quad(width, width));
+        geometry = new Geometry(getId(), new Quad(width, width));
         geometry.setMaterial(material);
         geometry.rotate((float) (-0.5f * Math.PI), 0, 0);
         geometry.setLocalTranslation(-1.0f * width / 2.0f, 0, width / 2.0f);

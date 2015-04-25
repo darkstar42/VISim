@@ -3,6 +3,7 @@ import com.jme3.math.Vector3f;
 import simulation.ParticleSystem;
 import simulation.Simulation;
 import simulation.element.Plane;
+import simulation.element.Sphere;
 import simulation.emitter.PointParticleEmitter;
 import simulation.force.Gravity;
 
@@ -26,6 +27,7 @@ public class Test extends SimpleApplication {
         simulation = new Simulation();
         simulation.addForce(new Gravity());
         simulation.addElement(new Plane(UUID.randomUUID().toString(), 10));
+        simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),

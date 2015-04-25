@@ -29,6 +29,10 @@ public abstract class Element {
         setForce(new Vector3f());
     }
 
+    public String getId() {
+        return id;
+    }
+
     public float getMass() {
         return mass;
     }
