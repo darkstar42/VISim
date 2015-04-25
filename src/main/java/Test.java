@@ -1,4 +1,5 @@
 import com.jme3.app.SimpleApplication;
+import com.jme3.math.Vector3f;
 import simulation.ParticleSystem;
 import simulation.Simulation;
 import simulation.emitter.PointParticleEmitter;
@@ -21,17 +22,15 @@ public class Test extends SimpleApplication {
     public void simpleInitApp() {
         simulation = new Simulation();
         simulation.addForce(new Gravity());
-        simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
+        //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
+        simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
+                new Vector3f(0, 0, 0),
+                new Vector3f(0, 3.0f, 0),
+                50,
+                200,
+                0.4f
+        )));
         simulation.render(getAssetManager(), getRootNode());
-
-        /*
-        ParticleEmitter particleEmitter = new PointParticleEmitter(new Vector3f(0, 0, 0));
-        particleSystem = new ParticleSystem(particleEmitter);
-
-        Geometry geometry = particleSystem.getGeometry(assetManager);
-
-        rootNode.attachChild(geometry);
-        */
     }
 
     @Override
