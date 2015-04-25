@@ -1,4 +1,4 @@
-package particle;
+package element;
 
 public interface ParticleEmitter {
     Particle generateParticle(long id);

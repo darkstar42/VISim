@@ -1,4 +1,4 @@
-package particle;
+package element;
 
 import com.jme3.math.Vector3f;
 

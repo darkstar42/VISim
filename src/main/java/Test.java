@@ -1,9 +1,8 @@
 import com.jme3.app.SimpleApplication;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import particle.ParticleEmitter;
-import particle.ParticleSystem;
-import particle.PointParticleEmitter;
+import simulation.ParticleSystem;
+import simulation.Simulation;
+import simulation.emitter.PointParticleEmitter;
+import simulation.force.Gravity;
 
 /**
  * Sample 1 - how to get started with the most simple JME 3 application.
@@ -11,7 +10,7 @@ import particle.PointParticleEmitter;
  * moving the mouse and pressing the WASD keys.
  */
 public class Test extends SimpleApplication {
-    ParticleSystem particleSystem;
+    Simulation simulation;
 
     public static void main(String[] args) {
         Test app = new Test();
@@ -20,20 +19,26 @@ public class Test extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        simulation = new Simulation();
+        simulation.addForce(new Gravity());
+        simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
+        simulation.render(getAssetManager(), getRootNode());
+
+        /*
         ParticleEmitter particleEmitter = new PointParticleEmitter(new Vector3f(0, 0, 0));
         particleSystem = new ParticleSystem(particleEmitter);
 
         Geometry geometry = particleSystem.getGeometry(assetManager);
 
         rootNode.attachChild(geometry);
+        */
     }
 
     @Override
     public void update() {
         super.update(); // makes sure to execute AppTasks
 
-        particleSystem.update();
-        particleSystem.draw();
+        simulation.update();
     }
 }
 

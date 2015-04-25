@@ -1,7 +1,7 @@
-package particle.neighbor;
+package element.neighbor;
 
 import com.jme3.math.Vector3f;
-import particle.Particle;
+import element.Particle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SpatialHashing {
-    private static int NUM_BUCKETS = 128;
-    private static float CELL_SIZE = 0.1f;
+    private static int NUM_BUCKETS = 512 * 512 * 512;
+    private static float CELL_SIZE = 0.01f;
     private static float INTERACTION_DISTANCE = 0.01f;
 
     private static Vector3f[] offsets;
@@ -63,7 +63,7 @@ public class SpatialHashing {
                     positions.put(cellIdx, new ArrayList<Particle>());
                 }
 
-                positions.get(cellIdx).add(particle);
+                positions.get(cellIdx).add(element);
             }
             */
 

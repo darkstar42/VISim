@@ -1,7 +1,7 @@
-package particle.neighbor;
+package element.neighbor;
 
 import com.jme3.math.Vector3f;
-import particle.Particle;
+import element.Particle;
 
 import java.util.ArrayList;
 import java.util.HashMap;

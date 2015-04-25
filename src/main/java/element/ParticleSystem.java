@@ -1,4 +1,4 @@
-package particle;
+package element;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -7,8 +7,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
-import particle.neighbor.BruteForce;
-import particle.neighbor.SpatialHashing;
+import element.neighbor.SpatialHashing;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class ParticleSystem {
 
     private ParticleEmitter particleEmitter;
 
-    private int spawningRate = 25;
+    private int spawningRate = 2;
 
     private Geometry geometry;
 
