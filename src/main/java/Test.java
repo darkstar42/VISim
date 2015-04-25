@@ -2,8 +2,11 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
 import simulation.ParticleSystem;
 import simulation.Simulation;
+import simulation.element.Plane;
 import simulation.emitter.PointParticleEmitter;
 import simulation.force.Gravity;
+
+import java.util.UUID;
 
 /**
  * Sample 1 - how to get started with the most simple JME 3 application.
@@ -22,6 +25,7 @@ public class Test extends SimpleApplication {
     public void simpleInitApp() {
         simulation = new Simulation();
         simulation.addForce(new Gravity());
+        simulation.addElement(new Plane(UUID.randomUUID().toString(), 10));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),

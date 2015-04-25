@@ -1,6 +1,8 @@
 package simulation.element;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 
 public abstract class Element {
     /**
@@ -13,6 +15,10 @@ public abstract class Element {
     private Vector3f position;
     private Vector3f velocity;
     private Vector3f force;
+
+    public Element(String id) {
+        this(id, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 0.0f);
+    }
 
     public Element(String id, Vector3f position, Vector3f velocity, float mass) {
         this.id = id;
@@ -64,7 +70,9 @@ public abstract class Element {
         setVelocity(velocity);
     }
 
-    public void render() {}
+    public abstract Geometry render(AssetManager assetManager);
+
+    public abstract void draw();
 
     /**
      * Returns the distance to another element

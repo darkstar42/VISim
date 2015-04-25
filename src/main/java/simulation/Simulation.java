@@ -109,6 +109,10 @@ public class Simulation {
     public void render(AssetManager assetManager, Node node) {
         this.rootNode = node;
 
+        for (Element element : elements) {
+            rootNode.attachChild(element.render(assetManager));
+        }
+
         for (ParticleSystem particleSystem : particleSystems) {
             rootNode.attachChild(particleSystem.render(assetManager));
         }

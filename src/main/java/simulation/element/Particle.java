@@ -1,6 +1,8 @@
 package simulation.element;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 
 public class Particle extends Element {
     /**
@@ -48,6 +50,17 @@ public class Particle extends Element {
         super.update(position, velocity);
 
         age++;
+    }
+
+    @Override
+    public Geometry render(AssetManager assetManager) {
+        // Intentionally left blank
+        return null;
+    }
+
+    @Override
+    public void draw() {
+        // Intentionally left blank
     }
 
     public int getAge() {
