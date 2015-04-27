@@ -4,6 +4,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Element {
     /**
      * An unique identifier within a simulation environment
@@ -16,6 +19,8 @@ public abstract class Element {
     private Vector3f velocity;
     private Vector3f force;
 
+    private List<Element> collisionCandidates;
+
     public Element(String id) {
         this(id, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 0.0f);
     }
@@ -27,6 +32,8 @@ public abstract class Element {
         setPosition(position);
         setVelocity(velocity);
         setForce(new Vector3f());
+
+        collisionCandidates = new ArrayList<>();
     }
 
     public String getId() {
@@ -69,9 +76,24 @@ public abstract class Element {
         setForce(getForce().set(0, 0, 0));
     }
 
-    public void update(Vector3f position, Vector3f velocity) {
-        setPosition(position);
-        setVelocity(velocity);
+    public void addCollisionCandidate(Element element) {
+        collisionCandidates.add(element);
+    }
+
+    public void resetCollisionCandidates() {
+        collisionCandidates.clear();
+    }
+
+    protected List<Element> getCollisionCandidates() {
+        return collisionCandidates;
+    }
+
+    public void update(float timestep) {
+        Vector3f newPosition = getPosition().add(getVelocity().mult(timestep));
+        Vector3f newVelocity = getVelocity().add(getForce().mult(timestep));
+
+        setPosition(newPosition);
+        setVelocity(newVelocity);
     }
 
     public abstract Geometry render(AssetManager assetManager);

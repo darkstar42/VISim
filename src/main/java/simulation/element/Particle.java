@@ -46,11 +46,81 @@ public class Particle extends Element {
         this.lifetime = lifetime;
     }
 
-    public void update(Vector3f position, Vector3f velocity) {
-        super.update(position, velocity);
+    public void update(float timestep) {
+        super.update(timestep);
+
+        for (Element element : getCollisionCandidates()) {
+            if (element instanceof Plane) {
+                float distance = ((Plane) element).getDistance(getPosition());
+                float direction = ((Plane) element).getNormal().dot(getVelocity());
+
+                Vector3f planeNormal = ((Plane) element).getNormal();
+
+                if (direction < 0.0f && Math.abs(distance) < 0.05f) {
+                    Vector3f normalVelocity = planeNormal.mult(planeNormal.dot(getVelocity()));
+                    Vector3f tangentialVelocity = getVelocity().subtract(normalVelocity);
+
+                    Vector3f newVelocity = tangentialVelocity.subtract(normalVelocity.mult(0.8f));
+                    setVelocity(newVelocity);
+                }
+
+                if (distance < 0.0f) {
+                    setPosition(getPosition().setY(0.0f));
+                }
+            }
+        }
 
         age++;
     }
+
+    /*
+    public void update(float timestep) {
+        float halfTimestep = timestep / 2.0f;
+
+        setVelocity(getVelocity().add(getForce().mult(halfTimestep)));
+
+        for (Element element : getCollisionCandidates()) {
+            if (element instanceof Plane) {
+                float distance = ((Plane) element).getDistance(getPosition());
+
+                if (distance < 0.001) {
+                    float contact = ((Plane) element).getNormal().dot(getVelocity());
+
+                    if (Math.abs(contact) < 0.005) {
+                        System.out.println("Resting contact");
+                    } else if (contact < 0) {
+                        System.out.println(distance);
+                        setVelocity(new Vector3f(0, 10, 0));
+                        //setVelocity(((Plane) element).getNormal().mult(-2.0f * getVelocity().dot(((Plane) element).getNormal())).add(getVelocity()));
+                    }
+                }
+            }
+        }
+
+        setVelocity(getVelocity().add(getForce().mult(halfTimestep)));
+        setPosition(getPosition().add(getVelocity().mult(halfTimestep)));
+
+        for (Element element : getCollisionCandidates()) {
+            if (element instanceof Plane) {
+                float contact = ((Plane) element).getNormal().dot(getVelocity());
+
+                if (Math.abs(contact) < 0.005) {
+                    System.out.println("Resting contact");
+                } else if (getPosition().y < 0.0f && contact < 0) {
+                    //setVelocity(getVelocity().set(0, 0, 0));
+                }
+            }
+        }
+
+        setPosition(getPosition().add(getVelocity().mult(timestep)));
+
+        if (getPosition().y < 0.0f) {
+            setPosition(getPosition().setY(0.0f));
+        }
+
+        age++;
+    }
+    */
 
     @Override
     public Geometry render(AssetManager assetManager) {

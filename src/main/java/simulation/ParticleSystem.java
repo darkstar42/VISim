@@ -7,7 +7,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
+import simulation.element.Element;
 import simulation.element.Particle;
+import simulation.element.Plane;
 import simulation.emitter.ParticleEmitter;
 
 import java.nio.FloatBuffer;
@@ -72,6 +74,12 @@ public class ParticleSystem {
     public void resetForces() {
         for (Particle particle : particles) {
             particle.resetForce();
+        }
+    }
+
+    public void resetCollisionCandidates() {
+        for (Particle particle : particles) {
+            particle.resetCollisionCandidates();
         }
     }
 
@@ -143,6 +151,34 @@ public class ParticleSystem {
             if (particle.getLifetime() != -1 && particle.getAge() > particle.getLifetime()) {
                 particles.remove(i);
                 i--;
+            }
+        }
+    }
+
+    public void findCollisionCandidates(List<Element> elements) {
+        for (Particle particle : particles) {
+            for (Element element : elements) {
+                if (element instanceof Plane) {
+                    float distance = element.getDistance(particle);
+
+                    particle.addCollisionCandidate(element);
+
+                    if (Math.abs(distance) < 1.0f) {
+                        //particle.addCollisionCandidate(element);
+
+                        /*
+                        float contact = ((Plane) element).getNormal().dot(particle.getVelocity());
+
+                        if (Math.abs(contact) < 0.05) {
+                            System.out.println("Resting contact");
+                        } else if (contact < 0) {
+                            System.out.println("Colliding contact");
+                        } else {
+                            //System.out.println("Separating contact");
+                        }
+                        */
+                    }
+                }
             }
         }
     }

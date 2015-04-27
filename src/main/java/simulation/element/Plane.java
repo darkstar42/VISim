@@ -3,13 +3,17 @@ package simulation.element;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
 import java.util.UUID;
 
 public class Plane extends Element {
-    Geometry geometry;
+    private Geometry geometry;
+
+    private Vector3f normal;
+    private Vector3f point;
 
     private int width;
 
@@ -21,6 +25,9 @@ public class Plane extends Element {
         super(id);
 
         this.width = width;
+
+        normal = new Vector3f(0.0f, 1.0f, 0.0f);
+        point = new Vector3f(0.0f, 0.0f, 0.0f);
     }
 
     @Override
@@ -28,6 +35,9 @@ public class Plane extends Element {
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", new ColorRGBA(0.3f, 0.3f, 0.3f, 0.25f));
         //material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+
+        // TODO - use normal for orientation
+        // TODO - use distance for translation
 
         geometry = new Geometry(getId(), new Quad(width, width));
         geometry.setMaterial(material);
@@ -40,5 +50,13 @@ public class Plane extends Element {
     @Override
     public void draw() {
         // TODO - update?
+    }
+
+    public Vector3f getNormal() {
+        return normal;
+    }
+
+    public float getDistance(Vector3f position) {
+        return getNormal().dot(position.subtract(point));
     }
 }

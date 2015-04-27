@@ -29,11 +29,20 @@ public class Test extends SimpleApplication {
         simulation.addElement(new Plane(UUID.randomUUID().toString(), 10));
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
+        /*
+        simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
+                new Vector3f(-2, 2, 0),
+                new Vector3f(3.0f, 0, 3.0f),
+                50,
+                200,
+                0.4f
+        )));
+        */
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),
                 new Vector3f(0, 3.0f, 0),
-                50,
-                200,
+                10,
+                500,
                 0.4f
         )));
         simulation.render(getAssetManager(), getRootNode());

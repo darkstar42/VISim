@@ -6,6 +6,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import simulation.element.Element;
 import simulation.element.Particle;
+import simulation.element.Plane;
 import simulation.force.Force;
 
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class Simulation {
 
         // TODO - Inter-element collision detection & Construct neighbour list
 
+        for (ParticleSystem particleSystem : particleSystems) {
+            particleSystem.findCollisionCandidates(elements);
+        }
+
         // TODO - Use neighbor list to compute interaction forces by accumulation
 
         // Accumulate external forces (e.g. gravity)
@@ -68,6 +73,7 @@ public class Simulation {
 
         // TODO - handle external boundary conditions by reflecting the velocities
 
+
         // Take a timestep
         time += timestep;
 
@@ -85,6 +91,7 @@ public class Simulation {
         // Reset the accumulated forces
         for (ParticleSystem particleSystem : particleSystems) {
             particleSystem.resetForces();
+            particleSystem.resetCollisionCandidates();
         }
 
         for (Element element : elements) {
@@ -125,13 +132,7 @@ public class Simulation {
     }
 
     protected void updateElement(Element element) {
-        Vector3f oldPosition = element.getPosition();
-        Vector3f oldVelocity = element.getVelocity();
-
-        Vector3f newPosition = oldPosition.add(element.getVelocity().mult(timestep));
-        Vector3f newVelocity = oldVelocity.add(element.getForce().mult(timestep));
-
-        element.update(newPosition, newVelocity);
+        element.update(timestep);
     }
 
     protected void updateParticles(List<Particle> particles) {
