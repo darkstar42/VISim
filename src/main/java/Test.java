@@ -24,9 +24,15 @@ public class Test extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        Plane firstPlane = new Plane(UUID.randomUUID().toString(), 10);
+        firstPlane.setNormal(new Vector3f(0.0f, 1.0f, -0.5f));
+        Plane secondPlane = new Plane(UUID.randomUUID().toString(), 5000);
+        secondPlane.setNormal(new Vector3f(0.0f, 1.0f, 0.0f));
+        secondPlane.setPosition(new Vector3f(-10, -1.0f, 10));
         simulation = new Simulation();
         simulation.addForce(new Gravity());
-        simulation.addElement(new Plane(UUID.randomUUID().toString(), 10));
+        //simulation.addElement(firstPlane);
+        simulation.addElement(secondPlane);
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
         /*
@@ -40,9 +46,9 @@ public class Test extends SimpleApplication {
         */
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),
-                new Vector3f(0, 3.0f, 0),
-                10,
-                500,
+                new Vector3f(0, 3.0f, -5.0f),
+                50,
+                1000,
                 0.4f
         )));
         simulation.render(getAssetManager(), getRootNode());

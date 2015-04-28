@@ -89,8 +89,8 @@ public abstract class Element {
     }
 
     public void update(float timestep) {
-        Vector3f newPosition = getPosition().add(getVelocity().mult(timestep));
         Vector3f newVelocity = getVelocity().add(getForce().mult(timestep));
+        Vector3f newPosition = getPosition().add(newVelocity.mult(timestep));
 
         setPosition(newPosition);
         setVelocity(newVelocity);

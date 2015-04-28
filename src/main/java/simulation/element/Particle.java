@@ -4,6 +4,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Particle extends Element {
     /**
      * The maximum lifetime of this element in simulation steps.
@@ -15,6 +18,8 @@ public class Particle extends Element {
      * The age of this element in simulation steps.
      */
     private int age;
+
+    private List<Particle> staticInteractionNeighbours;
 
     /**
      * Creates a new element with infinite lifetime
@@ -29,6 +34,8 @@ public class Particle extends Element {
 
         this.lifetime = -1;
         this.age = 0;
+
+        staticInteractionNeighbours = new ArrayList<>();
     }
 
     /**
@@ -56,16 +63,26 @@ public class Particle extends Element {
 
                 Vector3f planeNormal = ((Plane) element).getNormal();
 
-                if (direction < 0.0f && Math.abs(distance) < 0.05f) {
-                    Vector3f normalVelocity = planeNormal.mult(planeNormal.dot(getVelocity()));
-                    Vector3f tangentialVelocity = getVelocity().subtract(normalVelocity);
+                Vector3f collisionPoint = ((Plane) element).getCollisionPoint(this);
+                float width = ((Plane) element).getWidth() / 2.0f;
 
-                    Vector3f newVelocity = tangentialVelocity.subtract(normalVelocity.mult(0.8f));
-                    setVelocity(newVelocity);
-                }
+                Vector3f distancePoint = collisionPoint.subtract(getPosition());
 
-                if (distance < 0.0f) {
-                    setPosition(getPosition().setY(0.0f));
+
+                if (Math.abs(distance) < 0.1f) {
+                    if (direction < 0.0f) {
+                        Vector3f normalVelocity = planeNormal.mult(planeNormal.dot(getVelocity()));
+                        Vector3f tangentialVelocity = getVelocity().subtract(normalVelocity);
+
+                        Vector3f newVelocity = tangentialVelocity.subtract(normalVelocity.mult(1.2f));
+                        setVelocity(newVelocity);
+                    }
+
+                    if (distance < 0.0f) {
+
+                        setPosition(collisionPoint);
+                        //setPosition(getPosition().setY(collisionPoint.y));
+                    }
                 }
             }
         }
@@ -139,5 +156,13 @@ public class Particle extends Element {
 
     public int getLifetime() {
         return lifetime;
+    }
+
+    public List<Particle> getStaticInteractionNeighbours() {
+        return staticInteractionNeighbours;
+    }
+
+    public void addStaticInteractionNeighbour(Particle particle) {
+        staticInteractionNeighbours.add(particle);
     }
 }
