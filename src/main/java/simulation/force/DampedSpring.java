@@ -17,8 +17,8 @@ public class DampedSpring extends Force {
         this.particleB = particleB;
         this.restLength = restLength;
 
-        dampingCoefficient = 0.99f;
-        springConstant = 100.0f;
+        dampingCoefficient = 2f;
+        springConstant = 500.0f;
     }
 
     @Override
