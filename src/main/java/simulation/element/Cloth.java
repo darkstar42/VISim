@@ -3,11 +3,12 @@ package simulation.element;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
-import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
 import simulation.force.DampedSpring;
 
@@ -35,7 +36,7 @@ public class Cloth extends Element {
 
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
-                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 5, y * SECTION_WIDTH), initialSpeed, 0.01f);
+                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 3, y * SECTION_WIDTH), initialSpeed, 0.1f);
             }
         }
 
@@ -101,14 +102,26 @@ public class Cloth extends Element {
             }
         }
 
+        Vector2f[] texCoord = new Vector2f[9 * 9];
+
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                texCoord[y * 9 + x] = new Vector2f(x * 0.1f, y * 0.1f);
+            }
+        }
+
         Mesh mesh = new Mesh();
         mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
+        mesh.setBuffer(VertexBuffer.Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
         mesh.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indices));
         mesh.updateBound();
 
+        Texture texture = assetManager.loadTexture("Textures/Cloth/Monkey.jpg");
+
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", new ColorRGBA(0.0f, 0.0f, 1.0f, 1.0f));
+        //material.setColor("Color", new ColorRGBA(0.0f, 0.0f, 1.0f, 1.0f));
         material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+        material.setTexture("ColorMap", texture);
 
         geometry = new Geometry(getId(), mesh);
         geometry.setMaterial(material);
@@ -163,7 +176,8 @@ public class Cloth extends Element {
 
                 // TODO - remove this hack
                 if (x == 0 && (y == 0 || y == 9)) {
-                    particle.setPosition(particle.getPosition().set(0, 5.0f, y * SECTION_WIDTH));
+                    particle.setPosition(particle.getPosition().set(0, 3.0f, y * SECTION_WIDTH));
+                    particle.setVelocity(particle.getVelocity().set(0, 0, 0));
                 }
             }
         }
