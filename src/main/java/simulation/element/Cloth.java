@@ -1,15 +1,9 @@
 package simulation.element;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Quad;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
@@ -37,7 +31,7 @@ public class Cloth extends Element {
             for (int y = 0; y < 10; y++) {
                 Particle particle = particles[y][x];
 
-                for (int i = x - 1; i < x + 1) {
+                for (int i = x - 1; i < x + 1; i++) {
                     if (i < 0 || i > 9) continue;
 
                     for (int j = y - 1; y < 10; y++) {
