@@ -12,13 +12,13 @@ public class DampedSpring extends Force {
     private float dampingCoefficient;
     private float springConstant;
 
-    public DampedSpring(Particle particleA, Particle particleB) {
+    public DampedSpring(Particle particleA, Particle particleB, float restLength) {
         this.particleA = particleA;
         this.particleB = particleB;
+        this.restLength = restLength;
 
-        restLength = 1.0f;
-        dampingCoefficient = 0.01f;
-        springConstant = 0.01f;
+        dampingCoefficient = 0.5f;
+        springConstant = 50.0f;
     }
 
     @Override

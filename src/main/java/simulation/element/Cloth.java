@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
+    public static float SECTION_WIDTH = 0.5f;
+
     private Geometry geometry;
 
     private Particle[][] particles;
@@ -33,7 +35,7 @@ public class Cloth extends Element {
 
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
-                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x, 5, y), initialSpeed, 0.001f);
+                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 5, y * SECTION_WIDTH), initialSpeed, 0.01f);
             }
         }
 
@@ -50,9 +52,21 @@ public class Cloth extends Element {
                         Particle otherParticle = particles[j][i];
                         if (otherParticle.getId().equals(particle.getId())) continue;
 
-                        particle.addSpringForce(new DampedSpring(particle, otherParticle));
+                        particle.addSpringForce(new DampedSpring(particle, otherParticle, SECTION_WIDTH));
 
                         particle.addStaticInteractionNeighbour(otherParticle);
+                    }
+                }
+
+                if (y < 9) {
+                    if (x > 0) {
+                        Particle diagLeftParticle = particles[y + 1][x - 1];
+                        particle.addSpringForce(new DampedSpring(particle, diagLeftParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0))));
+                    }
+
+                    if (x < 9) {
+                        Particle diagRightParticle = particles[y + 1][x + 1];
+                        particle.addSpringForce(new DampedSpring(particle, diagRightParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0))));
                     }
                 }
             }
@@ -146,6 +160,11 @@ public class Cloth extends Element {
                 Particle particle = this.particles[y][x];
 
                 particle.update(timestep);
+
+                // TODO - remove this hack
+                if (x == 0 && (y == 0 || y == 9)) {
+                    particle.setPosition(particle.getPosition().set(0, 5.0f, y * SECTION_WIDTH));
+                }
             }
         }
     }
@@ -162,6 +181,17 @@ public class Cloth extends Element {
                         particle.addCollisionCandidate(element);
                     }
                 }
+            }
+        }
+    }
+
+    @Override
+    public void resetForce() {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Particle particle = this.particles[y][x];
+
+                particle.resetForce();
             }
         }
     }
