@@ -4,6 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import simulation.element.Cloth;
 import simulation.element.Element;
 import simulation.element.Particle;
 import simulation.element.Plane;
@@ -52,6 +53,12 @@ public class Simulation {
             particleSystem.findCollisionCandidates(elements);
         }
 
+        for (Element element : elements) {
+            if (element instanceof Cloth) {
+                ((Cloth) element).findCollisionCandidates(elements);
+            }
+        }
+
         // TODO - Use neighbor list to compute interaction forces by accumulation
 
         // Accumulate external forces (e.g. gravity)
@@ -63,7 +70,17 @@ public class Simulation {
 
         for (Element element : elements) {
             for (Force force : forces) {
-                force.applyForce(element);
+                if (element instanceof Cloth) {
+                    force.applyForce(((Cloth) element).getParticles());
+                } else {
+                    force.applyForce(element);
+                }
+            }
+        }
+
+        for (Element element : elements) {
+            if (element instanceof Cloth) {
+                ((Cloth) element).updateInternalForces();
             }
         }
 
@@ -128,6 +145,10 @@ public class Simulation {
     public void draw() {
         for (ParticleSystem particleSystem : particleSystems) {
             particleSystem.draw();
+        }
+
+        for (Element element : elements) {
+            element.draw();
         }
     }
 

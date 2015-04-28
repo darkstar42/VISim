@@ -2,6 +2,7 @@ package simulation.element;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -31,6 +32,7 @@ public class Plane extends Element {
     public Geometry render(AssetManager assetManager) {
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", new ColorRGBA(0.3f, 0.3f, 0.3f, 0.25f));
+        material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
         //material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
         // TODO - use normal for orientation

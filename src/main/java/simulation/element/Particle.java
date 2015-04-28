@@ -3,7 +3,9 @@ package simulation.element;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import simulation.force.DampedSpring;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public class Particle extends Element {
 
     private List<Particle> staticInteractionNeighbours;
 
+    private List<DampedSpring> springForces;
+
     /**
      * Creates a new element with infinite lifetime
      *
@@ -36,6 +40,7 @@ public class Particle extends Element {
         this.age = 0;
 
         staticInteractionNeighbours = new ArrayList<>();
+        springForces = new ArrayList<>();
     }
 
     /**
@@ -74,7 +79,7 @@ public class Particle extends Element {
                         Vector3f normalVelocity = planeNormal.mult(planeNormal.dot(getVelocity()));
                         Vector3f tangentialVelocity = getVelocity().subtract(normalVelocity);
 
-                        Vector3f newVelocity = tangentialVelocity.subtract(normalVelocity.mult(1.2f));
+                        Vector3f newVelocity = tangentialVelocity.subtract(normalVelocity.mult(0.7f));
                         setVelocity(newVelocity);
                     }
 
@@ -164,5 +169,20 @@ public class Particle extends Element {
 
     public void addStaticInteractionNeighbour(Particle particle) {
         staticInteractionNeighbours.add(particle);
+    }
+
+    public List<DampedSpring> getSpringForces() {
+        return springForces;
+    }
+
+    public void addSpringForce(DampedSpring springForce) {
+        springForces.add(springForce);
+    }
+
+    @Override
+    public void updateInternalForces() {
+        for (DampedSpring spring : springForces) {
+            spring.applyForce(this);
+        }
     }
 }

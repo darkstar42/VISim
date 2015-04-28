@@ -76,6 +76,10 @@ public abstract class Element {
         setForce(getForce().set(0, 0, 0));
     }
 
+    public void updateInternalForces() {
+        // Intentionally left blank
+    }
+
     public void addCollisionCandidate(Element element) {
         collisionCandidates.add(element);
     }

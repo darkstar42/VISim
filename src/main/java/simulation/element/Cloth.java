@@ -1,9 +1,19 @@
 package simulation.element;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.util.BufferUtils;
+import simulation.force.DampedSpring;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
@@ -21,24 +31,26 @@ public class Cloth extends Element {
         particles = new Particle[10][10];
         Vector3f initialSpeed = new Vector3f(0, 0, 0);
 
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x, 5, y), initialSpeed, 0.2f);
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x, 5, y), initialSpeed, 0.001f);
             }
         }
 
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
                 Particle particle = particles[y][x];
 
-                for (int i = x - 1; i < x + 1; i++) {
+                for (int i = x - 1; i <= x + 1; i++) {
                     if (i < 0 || i > 9) continue;
 
-                    for (int j = y - 1; y < 10; y++) {
+                    for (int j = y - 1; j <= y + 1; j++) {
                         if (j < 0 || j > 9) continue;
 
                         Particle otherParticle = particles[j][i];
                         if (otherParticle.getId().equals(particle.getId())) continue;
+
+                        particle.addSpringForce(new DampedSpring(particle, otherParticle));
 
                         particle.addStaticInteractionNeighbour(otherParticle);
                     }
@@ -48,12 +60,109 @@ public class Cloth extends Element {
     }
 
     @Override
+    public void updateInternalForces() {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Particle particle = particles[y][x];
+
+                particle.updateInternalForces();
+            }
+        }
+    }
+
+    @Override
     public Geometry render(AssetManager assetManager) {
-        return null;
+        Vector3f[] vertices = getVertices();
+        int[] indices = new int[2 * 9 * 9 * 3];
+
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                indices[2 * 3 * 9 * y + x * 6] = (y + 1) * 10 + x;
+                indices[2 * 3 * 9 * y + x * 6 + 1] = y * 10 + x;
+                indices[2 * 3 * 9 * y + x * 6 + 2] = y * 10 + (x + 1);
+
+                indices[2 * 3 * 9 * y + x * 6 + 3] = y * 10 + (x + 1);
+                indices[2 * 3 * 9 * y + x * 6 + 4] = (y + 1) * 10 + (x + 1);
+                indices[2 * 3 * 9 * y + x * 6 + 5] = (y + 1) * 10 + x;
+            }
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
+        mesh.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indices));
+        mesh.updateBound();
+
+        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        material.setColor("Color", new ColorRGBA(0.0f, 0.0f, 1.0f, 1.0f));
+        material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+
+        geometry = new Geometry(getId(), mesh);
+        geometry.setMaterial(material);
+
+        return geometry;
     }
 
     @Override
     public void draw() {
-        // TODO - update?
+        VertexBuffer vb = geometry.getMesh().getBuffer(VertexBuffer.Type.Position);
+        FloatBuffer newBuffer = BufferUtils.createFloatBuffer(getVertices());
+        vb.updateData(newBuffer);
+        vb.setUpdateNeeded();
+    }
+
+    private Vector3f[] getVertices() {
+        Vector3f[] vertices = new Vector3f[100];
+        int[] indices = new int[2 * 9 * 9 * 3];
+
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                Particle particle = particles[y][x];
+
+                vertices[10 * y + x] = particle.getPosition();
+            }
+        }
+
+        return vertices;
+    }
+
+    public List<Particle> getParticles() {
+        List<Particle> particles = new ArrayList<>();
+
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Particle particle = this.particles[y][x];
+
+                particles.add(particle);
+            }
+        }
+
+        return particles;
+    }
+
+    @Override
+    public void update(float timestep) {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Particle particle = this.particles[y][x];
+
+                particle.update(timestep);
+            }
+        }
+    }
+
+    public void findCollisionCandidates(List<Element> elements) {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                Particle particle = this.particles[y][x];
+
+                for (Element element : elements) {
+                    if (element instanceof Plane) {
+                        float distance = element.getDistance(particle);
+
+                        particle.addCollisionCandidate(element);
+                    }
+                }
+            }
+        }
     }
 }

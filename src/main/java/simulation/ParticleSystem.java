@@ -2,6 +2,7 @@ package simulation;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -94,10 +95,9 @@ public class ParticleSystem {
 
         geometry = new Geometry("particles", mesh);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
         mat.setBoolean("VertexColor", true);
         geometry.setMaterial(mat);
-
-        System.out.println(geometry);
 
         return geometry;
     }

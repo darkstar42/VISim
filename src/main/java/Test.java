@@ -2,6 +2,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
 import simulation.ParticleSystem;
 import simulation.Simulation;
+import simulation.element.Cloth;
 import simulation.element.Plane;
 import simulation.element.Sphere;
 import simulation.emitter.PointParticleEmitter;
@@ -34,6 +35,8 @@ public class Test extends SimpleApplication {
         //simulation.addElement(firstPlane);
         simulation.addElement(secondPlane);
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
+
+        simulation.addElement(new Cloth(UUID.randomUUID().toString()));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
         /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
@@ -44,6 +47,7 @@ public class Test extends SimpleApplication {
                 0.4f
         )));
         */
+        /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),
                 new Vector3f(0, 3.0f, -5.0f),
@@ -51,6 +55,7 @@ public class Test extends SimpleApplication {
                 1000,
                 0.4f
         )));
+        */
         simulation.render(getAssetManager(), getRootNode());
     }
 
