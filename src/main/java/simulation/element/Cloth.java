@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
-    public static float SECTION_WIDTH = 0.1f;
+    public static float SECTION_WIDTH = 0.05f;
+    public static int RESOLUTION = 50;
 
     private Geometry geometry;
 
@@ -31,24 +32,24 @@ public class Cloth extends Element {
     }
 
     protected void init() {
-        particles = new Particle[100][100];
+        particles = new Particle[RESOLUTION][RESOLUTION];
         Vector3f initialSpeed = new Vector3f(0, 0, 0);
 
-        for (int y = 0; y < 100; y++) {
-            for (int x = 0; x < 100; x++) {
-                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 10, y * SECTION_WIDTH), initialSpeed, 0.1f);
+        for (int y = 0; y < RESOLUTION; y++) {
+            for (int x = 0; x < RESOLUTION; x++) {
+                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 2, y * SECTION_WIDTH), initialSpeed, 0.01f);
             }
         }
 
-        for (int y = 0; y < 100; y++) {
-            for (int x = 0; x < 100; x++) {
+        for (int y = 0; y < RESOLUTION; y++) {
+            for (int x = 0; x < RESOLUTION; x++) {
                 Particle particle = particles[y][x];
 
                 for (int i = x - 1; i <= x + 1; i++) {
-                    if (i < 0 || i > 99) continue;
+                    if (i < 0 || i > RESOLUTION - 1) continue;
 
                     for (int j = y - 1; j <= y + 1; j++) {
-                        if (j < 0 || j > 99) continue;
+                        if (j < 0 || j > RESOLUTION - 1) continue;
 
                         Particle otherParticle = particles[j][i];
                         if (otherParticle.getId().equals(particle.getId())) continue;
@@ -59,13 +60,13 @@ public class Cloth extends Element {
                     }
                 }
 
-                if (y < 99) {
+                if (y < RESOLUTION - 1) {
                     if (x > 0) {
                         Particle diagLeftParticle = particles[y + 1][x - 1];
                         particle.addSpringForce(new DampedSpring(particle, diagLeftParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0))));
                     }
 
-                    if (x < 99) {
+                    if (x < RESOLUTION - 1) {
                         Particle diagRightParticle = particles[y + 1][x + 1];
                         particle.addSpringForce(new DampedSpring(particle, diagRightParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0))));
                     }
@@ -76,8 +77,8 @@ public class Cloth extends Element {
 
     @Override
     public void updateInternalForces() {
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
+        for (int x = 0; x < RESOLUTION; x++) {
+            for (int y = 0; y < RESOLUTION; y++) {
                 Particle particle = particles[y][x];
 
                 particle.updateInternalForces();
@@ -88,25 +89,26 @@ public class Cloth extends Element {
     @Override
     public Geometry render(AssetManager assetManager) {
         Vector3f[] vertices = getVertices();
-        int[] indices = new int[2 * 99 * 99 * 3];
+        int[] indices = new int[2 * (RESOLUTION - 1) * (RESOLUTION - 1) * 3];
 
-        for (int y = 0; y < 99; y++) {
-            for (int x = 0; x < 99; x++) {
-                indices[2 * 3 * 99 * y + x * 6] = (y + 1) * 100 + x;
-                indices[2 * 3 * 99 * y + x * 6 + 1] = y * 100 + x;
-                indices[2 * 3 * 99 * y + x * 6 + 2] = y * 100 + (x + 1);
+        for (int y = 0; y < RESOLUTION - 1; y++) {
+            for (int x = 0; x < RESOLUTION - 1; x++) {
+                indices[2 * 3 * (RESOLUTION - 1) * y + x * 6] = (y + 1) * RESOLUTION + x;
+                indices[2 * 3 * (RESOLUTION - 1) * y + x * 6 + 1] = y * RESOLUTION + x;
+                indices[2 * 3 * (RESOLUTION - 1) * y + x * 6 + 2] = y * RESOLUTION + (x + 1);
 
-                indices[2 * 3 * 99 * y + x * 6 + 3] = y * 100 + (x + 1);
-                indices[2 * 3 * 99 * y + x * 6 + 4] = (y + 1) * 100 + (x + 1);
-                indices[2 * 3 * 99 * y + x * 6 + 5] = (y + 1) * 100 + x;
+                indices[2 * 3 * (RESOLUTION - 1) * y + x * 6 + 3] = y * RESOLUTION + (x + 1);
+                indices[2 * 3 * (RESOLUTION - 1) * y + x * 6 + 4] = (y + 1) * RESOLUTION + (x + 1);
+                indices[2 * 3 * (RESOLUTION - 1) * y + x * 6 + 5] = (y + 1) * RESOLUTION + x;
             }
         }
 
-        Vector2f[] texCoord = new Vector2f[99 * 99];
+        Vector2f[] texCoord = new Vector2f[(RESOLUTION - 1) * (RESOLUTION - 1)];
 
-        for (int y = 0; y < 99; y++) {
-            for (int x = 0; x < 99; x++) {
-                texCoord[y * 99 + x] = new Vector2f(x * 0.01f, y * 0.01f);
+        for (int y = 0; y < (RESOLUTION - 1); y++) {
+            for (int x = 0; x < (RESOLUTION - 1); x++) {
+                texCoord[x * (RESOLUTION - 1) + y
+                        ] = new Vector2f(x * (1.0f / RESOLUTION), y * (1.0f / RESOLUTION));
             }
         }
 
@@ -138,14 +140,14 @@ public class Cloth extends Element {
     }
 
     private Vector3f[] getVertices() {
-        Vector3f[] vertices = new Vector3f[100 * 100];
-        int[] indices = new int[2 * 99 * 99 * 3];
+        Vector3f[] vertices = new Vector3f[RESOLUTION * RESOLUTION];
+        int[] indices = new int[2 * (RESOLUTION - 1) * (RESOLUTION - 1) * 3];
 
-        for (int y = 0; y < 100; y++) {
-            for (int x = 0; x < 100; x++) {
+        for (int y = 0; y < RESOLUTION; y++) {
+            for (int x = 0; x < RESOLUTION; x++) {
                 Particle particle = particles[y][x];
 
-                vertices[100 * y + x] = particle.getPosition();
+                vertices[RESOLUTION * y + x] = particle.getPosition();
             }
         }
 
@@ -155,8 +157,8 @@ public class Cloth extends Element {
     public List<Particle> getParticles() {
         List<Particle> particles = new ArrayList<>();
 
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
+        for (int x = 0; x < RESOLUTION; x++) {
+            for (int y = 0; y < RESOLUTION; y++) {
                 Particle particle = this.particles[y][x];
 
                 particles.add(particle);
@@ -168,15 +170,15 @@ public class Cloth extends Element {
 
     @Override
     public void update(float timestep) {
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
+        for (int x = 0; x < RESOLUTION; x++) {
+            for (int y = 0; y < RESOLUTION; y++) {
                 Particle particle = this.particles[y][x];
 
                 particle.update(timestep);
 
                 // TODO - remove this hack
                 if (y == 0) {
-                    particle.setPosition(particle.getPosition().set(x * SECTION_WIDTH, 10.0f, y * SECTION_WIDTH));
+                    particle.setPosition(particle.getPosition().set(x * SECTION_WIDTH, 2.0f, y * SECTION_WIDTH));
                     particle.setVelocity(particle.getVelocity().set(0, 0, 0));
                 }
             }
@@ -184,8 +186,8 @@ public class Cloth extends Element {
     }
 
     public void findCollisionCandidates(List<Element> elements) {
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
+        for (int x = 0; x < RESOLUTION; x++) {
+            for (int y = 0; y < RESOLUTION; y++) {
                 Particle particle = this.particles[y][x];
 
                 for (Element element : elements) {
@@ -201,8 +203,8 @@ public class Cloth extends Element {
 
     @Override
     public void resetForce() {
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
+        for (int x = 0; x < RESOLUTION; x++) {
+            for (int y = 0; y < RESOLUTION; y++) {
                 Particle particle = this.particles[y][x];
 
                 particle.resetForce();
