@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
+    public static float PARTICLE_WEIGHT = 0.1f;
     public static float SECTION_WIDTH = 0.05f;
     public static int RESOLUTION = 50;
 
@@ -37,7 +38,7 @@ public class Cloth extends Element {
 
         for (int y = 0; y < RESOLUTION; y++) {
             for (int x = 0; x < RESOLUTION; x++) {
-                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 2, y * SECTION_WIDTH), initialSpeed, 0.01f);
+                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 2, y * SECTION_WIDTH), initialSpeed, PARTICLE_WEIGHT);
             }
         }
 
@@ -54,22 +55,34 @@ public class Cloth extends Element {
                         Particle otherParticle = particles[j][i];
                         if (otherParticle.getId().equals(particle.getId())) continue;
 
-                        particle.addSpringForce(new DampedSpring(particle, otherParticle, SECTION_WIDTH));
+                        particle.addSpringForce(new DampedSpring(particle, otherParticle, SECTION_WIDTH, 1.0f, 1000.0f));
 
                         particle.addStaticInteractionNeighbour(otherParticle);
                     }
                 }
 
+                // Add shearing springs
                 if (y < RESOLUTION - 1) {
                     if (x > 0) {
                         Particle diagLeftParticle = particles[y + 1][x - 1];
-                        particle.addSpringForce(new DampedSpring(particle, diagLeftParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0))));
+                        particle.addSpringForce(new DampedSpring(particle, diagLeftParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0)), 5f, 500.0f));
                     }
 
                     if (x < RESOLUTION - 1) {
                         Particle diagRightParticle = particles[y + 1][x + 1];
-                        particle.addSpringForce(new DampedSpring(particle, diagRightParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0))));
+                        particle.addSpringForce(new DampedSpring(particle, diagRightParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0)), 5f, 500.0f));
                     }
+                }
+
+                // Add bending springs
+                if (y < RESOLUTION - 2) {
+                    Particle upperBendingParticle = particles[y + 2][x];
+                    particle.addSpringForce(new DampedSpring(particle, upperBendingParticle, 2.0f * SECTION_WIDTH, 5f, 500.0f));
+                }
+
+                if (x < RESOLUTION - 2) {
+                    Particle rightBendingParticle = particles[y][x + 2];
+                    particle.addSpringForce(new DampedSpring(particle, rightBendingParticle, 2.0f * SECTION_WIDTH, 5f, 500.0f));
                 }
             }
         }

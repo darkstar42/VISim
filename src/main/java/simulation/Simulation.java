@@ -61,10 +61,9 @@ public class Simulation {
 
         // TODO - Use neighbor list to compute interaction forces by accumulation
 
-        // Accumulate external forces (e.g. gravity)
-        for (ParticleSystem particleSystem : particleSystems) {
-            for (Force force : forces) {
-                force.applyForce(particleSystem.getParticles());
+        for (Element element : elements) {
+            if (element instanceof Cloth) {
+                ((Cloth) element).updateInternalForces();
             }
         }
 
@@ -78,9 +77,10 @@ public class Simulation {
             }
         }
 
-        for (Element element : elements) {
-            if (element instanceof Cloth) {
-                ((Cloth) element).updateInternalForces();
+        // Accumulate external forces (e.g. gravity)
+        for (ParticleSystem particleSystem : particleSystems) {
+            for (Force force : forces) {
+                force.applyForce(particleSystem.getParticles());
             }
         }
 

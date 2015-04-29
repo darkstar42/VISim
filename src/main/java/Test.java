@@ -6,6 +6,7 @@ import simulation.element.Cloth;
 import simulation.element.Plane;
 import simulation.element.Sphere;
 import simulation.emitter.PointParticleEmitter;
+import simulation.force.AirFriction;
 import simulation.force.Gravity;
 
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class Test extends SimpleApplication {
         secondPlane.setPosition(new Vector3f(-10, -1.0f, 10));
         simulation = new Simulation();
         simulation.addForce(new Gravity());
+        simulation.addForce(new AirFriction());
         //simulation.addElement(firstPlane);
         simulation.addElement(secondPlane);
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
@@ -47,15 +49,15 @@ public class Test extends SimpleApplication {
                 0.4f
         )));
         */
-        /*
+
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),
-                new Vector3f(0, 3.0f, -5.0f),
-                50,
-                1000,
+                new Vector3f(0.0f, -2.0f, 0.0f),
+                10,
+                500,
                 0.4f
         )));
-        */
+
         simulation.render(getAssetManager(), getRootNode());
     }
 
