@@ -4,6 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import org.jblas.FloatMatrix;
+import org.jblas.Solve;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,23 @@ public abstract class Element {
                 {0.0f, 0.0f, 0.0f},
                 {0.0f, 0.0f, 0.0f}
         });
+    }
+
+    public FloatMatrix getInverseMassInertiaTensorMatrix() {
+        FloatMatrix inertiaTensor = getInertiaTensor();
+
+        return new FloatMatrix(new float[][]{
+                {1.0f / getMass(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, 1.0f / getMass(), 0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 1.0f / getMass(), 0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f, 1.0f / inertiaTensor.get(0, 0), 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f, 0.0f, 1.0f / inertiaTensor.get(1, 1), 0.0f},
+                {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f / inertiaTensor.get(2, 2)}
+        });
+    }
+
+    public FloatMatrix getInverseInertiaTensor() {
+        return Solve.pinv(getInertiaTensor());
     }
 
     public Vector3f getPosition() {

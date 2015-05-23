@@ -6,6 +6,9 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import simulation.element.*;
 import simulation.force.Force;
+import simulation.spook.CollisionPair;
+import simulation.spook.GaussSeidelIterator;
+import simulation.spook.SphereCollisionPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,12 +88,22 @@ public class Simulation {
 
         // TODO - handle external boundary conditions by reflecting the velocities
 
-        Sphere sphere = (Sphere) elements.get(1);
         Plane plane = (Plane) elements.get(0);
+        Sphere sphere0 = (Sphere) elements.get(1);
+        Sphere sphere1 = (Sphere) elements.get(2);
 
+        List<CollisionPair> collisionPairs = new ArrayList<>();
+
+        collisionPairs.add(new SphereCollisionPair(sphere0, sphere1, timestep, 1000.0f, 1));
+
+        GaussSeidelIterator gs = new GaussSeidelIterator(collisionPairs, timestep);
+        gs.solve();
+
+        /*
         Spook spook = new Spook(timestep, elements);
 
         spook.solve(plane, sphere);
+        */
 
         // Take a timestep
         time += timestep;
