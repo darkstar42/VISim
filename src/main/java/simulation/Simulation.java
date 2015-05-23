@@ -1,6 +1,7 @@
 package simulation;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import simulation.element.*;
 import simulation.force.Force;
@@ -90,12 +91,44 @@ public class Simulation {
         Plane plane = (Plane) elements.get(0);
         Sphere sphere0 = (Sphere) elements.get(1);
         Sphere sphere1 = (Sphere) elements.get(2);
+        Sphere sphere2 = (Sphere) elements.get(3);
+        Sphere sphere3 = (Sphere) elements.get(4);
+        Sphere sphere4 = (Sphere) elements.get(5);
+        Sphere sphere5 = (Sphere) elements.get(6);
+
+        sphere5.setVelocity(new Vector3f(-0.5f, 0, 0));
 
         List<CollisionPair> collisionPairs = new ArrayList<>();
 
-        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere1, timestep, 500.0f, 1));
+        float sphereSpringConstant = 2000.0f;
+
+        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere1, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere2, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere3, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere4, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere5, timestep, sphereSpringConstant, 1));
+
+        collisionPairs.add(new SphereSphereCollisionPair(sphere1, sphere2, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere1, sphere3, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere1, sphere4, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere1, sphere5, timestep, sphereSpringConstant, 1));
+
+        collisionPairs.add(new SphereSphereCollisionPair(sphere2, sphere3, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere2, sphere4, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere2, sphere5, timestep, sphereSpringConstant, 1));
+
+        collisionPairs.add(new SphereSphereCollisionPair(sphere3, sphere4, timestep, sphereSpringConstant, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere3, sphere5, timestep, sphereSpringConstant, 1));
+
+        collisionPairs.add(new SphereSphereCollisionPair(sphere4, sphere5, timestep, sphereSpringConstant, 1));
+
         collisionPairs.add(new SpherePlaneCollisionPair(sphere0, plane, timestep, 20.0f, 1));
         collisionPairs.add(new SpherePlaneCollisionPair(sphere1, plane, timestep, 20.0f, 1));
+        collisionPairs.add(new SpherePlaneCollisionPair(sphere2, plane, timestep, 20.0f, 1));
+        collisionPairs.add(new SpherePlaneCollisionPair(sphere3, plane, timestep, 20.0f, 1));
+        collisionPairs.add(new SpherePlaneCollisionPair(sphere4, plane, timestep, 20.0f, 1));
+        collisionPairs.add(new SpherePlaneCollisionPair(sphere5, plane, timestep, 20.0f, 1));
+
 
         GaussSeidelIterator gs = new GaussSeidelIterator(collisionPairs, timestep);
         gs.solve();
