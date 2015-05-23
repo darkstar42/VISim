@@ -137,4 +137,9 @@ public class Plane extends Element {
 
         return Math.abs(dist) <= sphere.getRadius();
     }
+
+    @Override
+    public FloatMatrix getInverseMassInertiaTensorMatrix() {
+        return new FloatMatrix(6, 6);
+    }
 }

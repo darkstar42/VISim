@@ -3,6 +3,7 @@ package simulation.spook;
 import com.jme3.math.Vector3f;
 import org.jblas.FloatMatrix;
 import org.jblas.Solve;
+import org.lwjgl.Sys;
 
 import java.util.List;
 
@@ -16,58 +17,64 @@ public class GaussSeidelIterator {
     }
 
     public void solve() {
-        CollisionPair collisionPair = collisionPairs.get(0);
+        for (CollisionPair collisionPair : collisionPairs) {
 
-        if (collisionPair.getOverlap() < 0) {
+            if (collisionPair.isActive()) {
+                //System.out.println(collisionPair.getOverlap());
 
-            FloatMatrix v_i = new FloatMatrix(6, 1);
-            FloatMatrix v_j = new FloatMatrix(6, 1);
+                FloatMatrix v_i = new FloatMatrix(6, 1);
+                FloatMatrix v_j = new FloatMatrix(6, 1);
 
-            FloatMatrix firstJacobian = collisionPair.getFirstJacobian();
-            FloatMatrix invFirstJacobian = Solve.pinv(firstJacobian);
-            FloatMatrix secondJacobian = collisionPair.getSecondJacobian();
-            FloatMatrix invSecondJacobian = Solve.pinv(secondJacobian);
+                FloatMatrix firstJacobian = collisionPair.getFirstJacobian();
+                FloatMatrix secondJacobian = collisionPair.getSecondJacobian();
 
-            FloatMatrix jacobian = collisionPair.getJacobian();
+                FloatMatrix jacobian = collisionPair.getJacobian();
 
-            FloatMatrix firstInverseMassMatrix = collisionPair.getFirstElement().getInverseMassInertiaTensorMatrix();
-            FloatMatrix secondInverseMassMatrix = collisionPair.getSecondElement().getInverseMassInertiaTensorMatrix();
+                FloatMatrix firstInverseMassMatrix = collisionPair.getFirstElement().getInverseMassInertiaTensorMatrix();
+                FloatMatrix secondInverseMassMatrix = collisionPair.getSecondElement().getInverseMassInertiaTensorMatrix();
 
-            //System.out.println(firstJacobian);
-            //System.out.println(firstInverseMassMatrix);
+                //System.out.println(firstJacobian);
+                //System.out.println(secondInverseMassMatrix);
 
-            float e = collisionPair.getE();
-            float D = 0.0f;
-            D += (firstJacobian.mmul(firstInverseMassMatrix).mmul(firstJacobian.transpose())).get(0);
-            D += (secondJacobian.mmul(secondInverseMassMatrix).mmul(secondJacobian.transpose())).get(0);
-            D += e;
+                float e = collisionPair.getE();
+                float D = 0.0f;
+                D += (firstJacobian.mmul(firstInverseMassMatrix).mmul(firstJacobian.transpose())).get(0);
+                D += (secondJacobian.mmul(secondInverseMassMatrix).mmul(secondJacobian.transpose())).get(0);
+                D += e;
 
-            // We only have one constraint, so skip the loop??
+                //System.out.println(D);
 
-            // v = 12 x 1
-            FloatMatrix v = collisionPair.getInitialVelocity();
+                // We only have one constraint, so skip the loop??
 
-            //System.out.println("invMassMatrix: " + collisionPair.getInverseMassMatrix().rows + " x " + collisionPair.getInverseMassMatrix().columns);
-            //System.out.println("initialForce: " + collisionPair.getInitialForce().rows + " x " + collisionPair.getInitialForce().columns);
+                // v = 12 x 1
+                FloatMatrix v = collisionPair.getInitialVelocity();
 
-            v = v.add(collisionPair.getInverseMassMatrix().mmul(collisionPair.getInitialForce()).mul(timestep));
+                //System.out.println("invMassMatrix: " + collisionPair.getInverseMassMatrix().rows + " x " + collisionPair.getInverseMassMatrix().columns);
+                //System.out.println("initialForce: " + collisionPair.getInitialForce().rows + " x " + collisionPair.getInitialForce().columns);
 
-            float lambda = collisionPair.getInitialLambda();
-            float r = jacobian.mmul(v).get(0) + e * lambda - collisionPair.getOverlap();
+                v = v.add(collisionPair.getInverseMassMatrix().mmul(collisionPair.getInitialForce()).mul(timestep));
 
-            float z = (-1.0f / D) * r;
+                float lambda = collisionPair.getInitialLambda();
+                float r = jacobian.mmul(v).get(0) + e * lambda - collisionPair.getOverlap();
 
-            FloatMatrix d_i = firstInverseMassMatrix.mmul(firstJacobian.transpose()).mul(z);
-            FloatMatrix d_j = secondInverseMassMatrix.mmul(secondJacobian.transpose()).mul(z);
+                for (int i = 0; i < 1; i++) {
+                    float z = (-1.0f / D) * r;
 
-            r += firstJacobian.mmul(d_i).get(0);
-            r += secondJacobian.mmul(d_j).get(0);
+                    FloatMatrix d_i = firstInverseMassMatrix.mmul(firstJacobian.transpose()).mul(z);
+                    FloatMatrix d_j = secondInverseMassMatrix.mmul(secondJacobian.transpose()).mul(z);
 
-            v_i = v_i.add(d_i);
-            v_j = v_j.add(d_j);
+                    r += firstJacobian.mmul(d_i).get(0);
+                    r += secondJacobian.mmul(d_j).get(0);
 
-            collisionPair.getFirstElement().setVelocity(collisionPair.getFirstElement().getVelocity().add(new Vector3f(v_i.get(0), v_i.get(1), v_i.get(2))));
-            collisionPair.getSecondElement().setVelocity(collisionPair.getSecondElement().getVelocity().add(new Vector3f(v_j.get(0), v_j.get(1), v_j.get(2))));
+                    v_i = v_i.add(d_i);
+                    v_j = v_j.add(d_j);
+
+                    //System.out.println(v_i);
+
+                    collisionPair.getFirstElement().setVelocity(collisionPair.getFirstElement().getVelocity().add(new Vector3f(v_i.get(0), v_i.get(1), v_i.get(2))));
+                    collisionPair.getSecondElement().setVelocity(collisionPair.getSecondElement().getVelocity().add(new Vector3f(v_j.get(0), v_j.get(1), v_j.get(2))));
+                }
+            }
         }
     }
 

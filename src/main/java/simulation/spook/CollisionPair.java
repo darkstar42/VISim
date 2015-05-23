@@ -27,4 +27,6 @@ public abstract class CollisionPair {
     public abstract float getInitialLambda();
 
     public abstract float getOverlap();
+
+    public abstract boolean isActive();
 }

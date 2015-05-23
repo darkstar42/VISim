@@ -1,14 +1,13 @@
 package simulation;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import simulation.element.*;
 import simulation.force.Force;
 import simulation.spook.CollisionPair;
 import simulation.spook.GaussSeidelIterator;
-import simulation.spook.SphereCollisionPair;
+import simulation.spook.SpherePlaneCollisionPair;
+import simulation.spook.SphereSphereCollisionPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +93,9 @@ public class Simulation {
 
         List<CollisionPair> collisionPairs = new ArrayList<>();
 
-        collisionPairs.add(new SphereCollisionPair(sphere0, sphere1, timestep, 1000.0f, 1));
+        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere1, timestep, 500.0f, 1));
+        collisionPairs.add(new SpherePlaneCollisionPair(sphere0, plane, timestep, 20.0f, 1));
+        collisionPairs.add(new SpherePlaneCollisionPair(sphere1, plane, timestep, 20.0f, 1));
 
         GaussSeidelIterator gs = new GaussSeidelIterator(collisionPairs, timestep);
         gs.solve();

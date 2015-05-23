@@ -4,7 +4,7 @@ import com.jme3.math.Vector3f;
 import org.jblas.FloatMatrix;
 import simulation.element.Sphere;
 
-public class SphereCollisionPair extends CollisionPair {
+public class SphereSphereCollisionPair extends CollisionPair {
     private Sphere element0;
     private Sphere element1;
 
@@ -14,7 +14,7 @@ public class SphereCollisionPair extends CollisionPair {
 
     private float a, b, e;
 
-    public SphereCollisionPair(Sphere element0, Sphere element1, float timestep, float springConstant, int iterationSteps) {
+    public SphereSphereCollisionPair(Sphere element0, Sphere element1, float timestep, float springConstant, int iterationSteps) {
         this.element0 = element0;
         this.element1 = element1;
 
@@ -287,5 +287,9 @@ public class SphereCollisionPair extends CollisionPair {
         FloatMatrix transposedJacobian = getJacobian().transpose();
 
         return jacobian.mmul(invMassMatrix).mmul(transposedJacobian).get(0) + getE();
+    }
+
+    public boolean isActive() {
+        return getOverlap() < 0.0f;
     }
 }

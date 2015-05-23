@@ -34,7 +34,7 @@ public class Test extends SimpleApplication {
         //simulation.addElement(firstPlane);
         simulation.addElement(secondPlane);
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
-        simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 3.0f, 1.0f), 0.1f));
+        simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.1f, 3.0f, 1.1f), 0.1f));
 
         //simulation.addElement(new Cloth(UUID.randomUUID().toString()));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
