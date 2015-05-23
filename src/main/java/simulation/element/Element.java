@@ -3,6 +3,7 @@ package simulation.element;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import org.jblas.FloatMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,30 @@ public abstract class Element {
         this.mass = mass;
     }
 
+    public FloatMatrix getMassMatrix() {
+        return new FloatMatrix(new float[][]{
+                {getMass(), 0.0f, 0.0f},
+                {0.0f, getMass(), 0.0f},
+                {0.0f, 0.0f, getMass()}
+        });
+    }
+
+    public FloatMatrix getInverseMassMatrix() {
+        return new FloatMatrix(new float[][]{
+                {1.0f / getMass(), 0.0f, 0.0f},
+                {0.0f, 1.0f / getMass(), 0.0f},
+                {0.0f, 0.0f, 1.0f / getMass()}
+        });
+    }
+
+    public FloatMatrix getInertiaTensor() {
+        return new FloatMatrix(new float[][]{
+                {0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f}
+        });
+    }
+
     public Vector3f getPosition() {
         return position;
     }
@@ -78,6 +103,17 @@ public abstract class Element {
 
     public void updateInternalForces() {
         // Intentionally left blank
+    }
+
+    public void findCollisionCandidates(List<Element> elements) {
+        for (Element element : elements) {
+            if (element instanceof Plane) {
+                float distance = element.getDistance(this);
+
+                // TODO
+                addCollisionCandidate(element);
+            }
+        }
     }
 
     public void addCollisionCandidate(Element element) {

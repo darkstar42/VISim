@@ -5,7 +5,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import simulation.force.DampedSpring;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +27,10 @@ public class Particle extends Element {
     /**
      * Creates a new element with infinite lifetime
      *
-     * @param id An unique identifier within the simulation environment
+     * @param id       An unique identifier within the simulation environment
      * @param position The position of this element in the simulation space
      * @param velocity The initial velocity vector
-     * @param mass The mass of this element
+     * @param mass     The mass of this element
      */
     public Particle(String id, Vector3f position, Vector3f velocity, float mass) {
         super(id, position, velocity, mass);
@@ -46,10 +45,10 @@ public class Particle extends Element {
     /**
      * Creates a new element with a finite lifetime
      *
-     * @param id An unique identifier within the simulation environment
+     * @param id       An unique identifier within the simulation environment
      * @param position The position of this element in the simulation space
      * @param velocity The initial velocity vector
-     * @param mass The mass of this element
+     * @param mass     The mass of this element
      * @param lifetime The number of simulation steps this element will survive
      */
     public Particle(String id, Vector3f position, Vector3f velocity, float mass, int lifetime) {
@@ -69,7 +68,7 @@ public class Particle extends Element {
                 Vector3f planeNormal = ((Plane) element).getNormal();
 
                 Vector3f collisionPoint = ((Plane) element).getCollisionPoint(this);
-                float width = ((Plane) element).getWidth() / 2.0f;
+                //float width = ((Plane) element).getWidth() / 2.0f;
 
                 Vector3f distancePoint = collisionPoint.subtract(getPosition());
 
@@ -103,7 +102,7 @@ public class Particle extends Element {
 
         for (Element element : getCollisionCandidates()) {
             if (element instanceof Plane) {
-                float distance = ((Plane) element).getDistance(getPosition());
+                float distance = ((Plane) element).getOriginDistance(getPosition());
 
                 if (distance < 0.001) {
                     float contact = ((Plane) element).getNormal().dot(getVelocity());

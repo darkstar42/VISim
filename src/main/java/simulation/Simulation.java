@@ -4,10 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import simulation.element.Cloth;
-import simulation.element.Element;
-import simulation.element.Particle;
-import simulation.element.Plane;
+import simulation.element.*;
 import simulation.force.Force;
 
 import java.util.ArrayList;
@@ -54,9 +51,7 @@ public class Simulation {
         }
 
         for (Element element : elements) {
-            if (element instanceof Cloth) {
-                ((Cloth) element).findCollisionCandidates(elements);
-            }
+            element.findCollisionCandidates(elements);
         }
 
         // TODO - Use neighbor list to compute interaction forces by accumulation
@@ -90,6 +85,12 @@ public class Simulation {
 
         // TODO - handle external boundary conditions by reflecting the velocities
 
+        Sphere sphere = (Sphere) elements.get(1);
+        Plane plane = (Plane) elements.get(0);
+
+        Spook spook = new Spook(timestep, elements);
+
+        spook.solve(plane, sphere);
 
         // Take a timestep
         time += timestep;

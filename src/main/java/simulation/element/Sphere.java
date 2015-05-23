@@ -6,9 +6,7 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Quad;
-
-import java.util.UUID;
+import org.jblas.FloatMatrix;
 
 public class Sphere extends Element {
     Geometry geometry;
@@ -24,7 +22,7 @@ public class Sphere extends Element {
     }
 
     public Sphere(String id, Vector3f position, float radius) {
-        super(id, position, new Vector3f(0, 0, 0), 0.0f);
+        super(id, position, new Vector3f(0, 0, 0), 0.1f);
 
         this.radius = radius;
     }
@@ -46,6 +44,53 @@ public class Sphere extends Element {
 
     @Override
     public void draw() {
-        // TODO - update?
+        geometry.setLocalTranslation(getPosition());
+    }
+
+    public void update(float timestep) {
+        super.update(timestep);
+
+        for (Element element : getCollisionCandidates()) {
+            if (element instanceof Plane) {
+                Vector3f closestPointOnPlane = ((Plane) element).getClosestPoint(this);
+                float direction = ((Plane) element).getNormal().dot(getVelocity());
+
+                //System.out.println(direction);
+                //System.out.println(((Plane) element).testCollision(this));
+
+                if (((Plane) element).testCollision(this)) {
+                    if (direction < 0.0f) {
+                        Vector3f normalVelocity = ((Plane) element).getNormal().mult(((Plane) element).getNormal().dot(getVelocity()));
+                        Vector3f tangentialVelocity = getVelocity().subtract(normalVelocity);
+
+                        Vector3f newVelocity = tangentialVelocity.subtract(normalVelocity.mult(0.7f));
+                        setVelocity(newVelocity);
+                    }
+                }
+            }
+        }
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    @Override
+    public FloatMatrix getInertiaTensor() {
+        float val = (2.0f / 5.0f) * getMass() * getRadius() * getRadius();
+
+        return new FloatMatrix(new float[][]{
+                {val, 0.0f, 0.0f},
+                {0.0f, val, 0.0f},
+                {0.0f, 0.0f, val}
+        });
+    }
+
+    public boolean testCollision(Sphere sphere) {
+        Vector3f d = getPosition().subtract(sphere.getPosition());
+        float dist = d.dot(d);
+        float radiusSum = getRadius() + sphere.getRadius();
+
+        return dist <= radiusSum * radiusSum;
     }
 }

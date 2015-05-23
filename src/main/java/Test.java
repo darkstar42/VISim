@@ -1,11 +1,8 @@
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
-import simulation.ParticleSystem;
 import simulation.Simulation;
-import simulation.element.Cloth;
 import simulation.element.Plane;
 import simulation.element.Sphere;
-import simulation.emitter.PointParticleEmitter;
 import simulation.force.AirFriction;
 import simulation.force.Gravity;
 
@@ -26,11 +23,11 @@ public class Test extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        Plane firstPlane = new Plane(UUID.randomUUID().toString(), 10);
+        Plane firstPlane = new Plane(UUID.randomUUID().toString());
         firstPlane.setNormal(new Vector3f(0.0f, 1.0f, -0.5f));
-        Plane secondPlane = new Plane(UUID.randomUUID().toString(), 5000);
-        secondPlane.setNormal(new Vector3f(0.0f, 1.0f, 0.0f));
-        secondPlane.setPosition(new Vector3f(-10, -1.0f, 10));
+        Plane secondPlane = new Plane(UUID.randomUUID().toString());
+        //secondPlane.setNormal(new Vector3f(0.0f, 1.0f, 0.0f));
+        //secondPlane.setPosition(new Vector3f(-10, -1.0f, 10));
         simulation = new Simulation();
         simulation.addForce(new Gravity());
         simulation.addForce(new AirFriction());
@@ -38,7 +35,7 @@ public class Test extends SimpleApplication {
         simulation.addElement(secondPlane);
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
 
-        simulation.addElement(new Cloth(UUID.randomUUID().toString()));
+        //simulation.addElement(new Cloth(UUID.randomUUID().toString()));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
         /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
@@ -50,6 +47,7 @@ public class Test extends SimpleApplication {
         )));
         */
 
+        /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
                 new Vector3f(0, 0, 0),
                 new Vector3f(0.0f, -2.0f, 0.0f),
@@ -57,6 +55,7 @@ public class Test extends SimpleApplication {
                 500,
                 0.4f
         )));
+        */
 
         simulation.render(getAssetManager(), getRootNode());
     }
