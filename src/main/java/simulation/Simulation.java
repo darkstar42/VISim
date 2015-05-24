@@ -3,6 +3,7 @@ package simulation;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import simulation.collisiondetection.SpatialHashing;
 import simulation.element.*;
 import simulation.force.Force;
 import simulation.spook.CollisionPair;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Simulation {
+    private AssetManager assetManager;
+
     private List<Element> elements;
     private List<ParticleSystem> particleSystems;
     private List<Force> forces;
@@ -88,6 +91,10 @@ public class Simulation {
 
         // TODO - handle external boundary conditions by reflecting the velocities
 
+        SpatialHashing spatialHashing = new SpatialHashing(this);
+        spatialHashing.hash();
+        spatialHashing.findCollisionPairs();
+
         Plane plane = (Plane) elements.get(0);
         Sphere sphere0 = (Sphere) elements.get(1);
         Sphere sphere1 = (Sphere) elements.get(2);
@@ -98,6 +105,7 @@ public class Simulation {
 
         sphere5.setVelocity(new Vector3f(-0.5f, 0, 0));
 
+        /*
         List<CollisionPair> collisionPairs = new ArrayList<>();
 
         float sphereSpringConstant = 2000.0f;
@@ -128,9 +136,10 @@ public class Simulation {
         collisionPairs.add(new SpherePlaneCollisionPair(sphere3, plane, timestep, 20.0f, 1));
         collisionPairs.add(new SpherePlaneCollisionPair(sphere4, plane, timestep, 20.0f, 1));
         collisionPairs.add(new SpherePlaneCollisionPair(sphere5, plane, timestep, 20.0f, 1));
+        */
 
 
-        GaussSeidelIterator gs = new GaussSeidelIterator(collisionPairs, timestep);
+        GaussSeidelIterator gs = new GaussSeidelIterator(spatialHashing.getCollisionPairs(), timestep);
         gs.solve();
 
         /*
@@ -170,6 +179,12 @@ public class Simulation {
         elements.add(element);
     }
 
+    public void addElement(Element element, boolean render) {
+        rootNode.attachChild(element.render(assetManager));
+
+        addElement(element);
+    }
+
     public void addParticleSystem(ParticleSystem particleSystem) {
         particleSystems.add(particleSystem);
     }
@@ -180,6 +195,7 @@ public class Simulation {
 
     public void render(AssetManager assetManager, Node node) {
         this.rootNode = node;
+        this.assetManager = assetManager;
 
         for (Element element : elements) {
             rootNode.attachChild(element.render(assetManager));
@@ -208,5 +224,13 @@ public class Simulation {
         for (Particle particle : particles) {
             updateElement(particle);
         }
+    }
+
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public float getTimestep() {
+        return timestep;
     }
 }

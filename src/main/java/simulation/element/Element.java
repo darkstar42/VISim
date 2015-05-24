@@ -5,6 +5,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import org.jblas.FloatMatrix;
 import org.jblas.Solve;
+import simulation.spook.CollisionPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public abstract class Element {
     private Vector3f velocity;
     private Vector3f force;
 
+    private List<CollisionPair> collisionPairs;
     private List<Element> collisionCandidates;
 
     public Element(String id) {
@@ -36,6 +38,7 @@ public abstract class Element {
         setForce(new Vector3f());
 
         collisionCandidates = new ArrayList<>();
+        collisionPairs = new ArrayList<>();
     }
 
     public String getId() {
@@ -168,5 +171,17 @@ public abstract class Element {
         Vector3f otherPosition = otherElement.getPosition();
 
         return otherPosition.subtract(getPosition()).length();
+    }
+
+    public void addCollisionPair(CollisionPair collisionPair) {
+        collisionPairs.add(collisionPair);
+    }
+
+    public List<CollisionPair> getCollisionPairs() {
+        return collisionPairs;
+    }
+
+    public void resetCollisionPairs() {
+        collisionPairs.clear();
     }
 }
