@@ -1,7 +1,11 @@
 package simulation;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.PointLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import simulation.collisiondetection.SpatialHashing;
 import simulation.element.*;
@@ -103,7 +107,7 @@ public class Simulation {
         Sphere sphere4 = (Sphere) elements.get(5);
         Sphere sphere5 = (Sphere) elements.get(6);
 
-        sphere5.setVelocity(new Vector3f(-0.5f, 0, 0));
+        //sphere5.setVelocity(new Vector3f(-0.5f, 0, 0));
 
         /*
         List<CollisionPair> collisionPairs = new ArrayList<>();

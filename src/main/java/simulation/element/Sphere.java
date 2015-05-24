@@ -29,8 +29,13 @@ public class Sphere extends Element {
 
     @Override
     public Geometry render(AssetManager assetManager) {
-        Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        material.setColor("Color", new ColorRGBA(0, 0.5f, 0, 0.8f));
+        Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        material.setBoolean("UseMaterialColors", false);
+        //material.setColor("GlowColor",ColorRGBA.White);
+        material.setColor("Diffuse",ColorRGBA.Green);
+        material.setColor("Specular",ColorRGBA.White);
+        material.setColor("Ambient",ColorRGBA.Green);
+        //material.setColor("Color", new ColorRGBA(0, 0.5f, 0, 0.8f));
         material.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
 
         geometry = new Geometry(getId(), new com.jme3.scene.shape.Sphere(16, 16, radius));

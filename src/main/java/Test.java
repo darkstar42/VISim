@@ -5,7 +5,16 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.PointLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.PssmShadowRenderer;
 import simulation.Simulation;
 import simulation.element.Plane;
 import simulation.element.Sphere;
@@ -32,6 +41,16 @@ public class Test extends SimpleApplication {
         initKeys();
         initCrossHairs();
 
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(2.3f));
+        rootNode.addLight(al);
+
+        PointLight lamp_light = new PointLight();
+        lamp_light.setColor(ColorRGBA.Yellow);
+        lamp_light.setRadius(10f);
+        lamp_light.setPosition(new Vector3f(5.0f, 5.0f, 5.0f));
+        rootNode.addLight(lamp_light);
+
         Plane firstPlane = new Plane(UUID.randomUUID().toString());
         firstPlane.setNormal(new Vector3f(0.0f, 1.0f, -0.5f));
         Plane secondPlane = new Plane(UUID.randomUUID().toString());
@@ -42,12 +61,24 @@ public class Test extends SimpleApplication {
         simulation.addForce(new AirFriction());
         //simulation.addElement(firstPlane);
         simulation.addElement(secondPlane);
+        /*
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 1.0f, 1.0f), 0.1f));
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 2.0f, 1.0f), 0.1f));
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 3.0f, 1.0f), 0.1f));
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 4.0f, 1.0f), 0.1f));
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(1.0f, 5.0f, 1.0f), 0.1f));
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(2.0f, 0.1f, 1.0f), 0.1f));
+        */
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                for (int z = 0; z < 3; z++) {
+                    simulation.addElement(
+                            new Sphere(UUID.randomUUID().toString(), new Vector3f(0.2f * x, 0.2f * z + 0.1f, 0.2f * y), 0.1f)
+                    );
+                }
+            }
+        }
 
 
         //simulation.addElement(new Cloth(UUID.randomUUID().toString()));
@@ -110,7 +141,7 @@ public class Test extends SimpleApplication {
         ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
         ch.setText("+"); // crosshairs
         ch.setLocalTranslation( // center
-                settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
+                settings.getWidth() / 2 - ch.getLineWidth() / 2, settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
         guiNode.attachChild(ch);
     }
 }

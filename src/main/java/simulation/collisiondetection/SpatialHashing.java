@@ -34,16 +34,33 @@ public class SpatialHashing {
     }
 
     private int getBucketIndex(Vector3f position) {
+        return 0;
+        /*
         int n = Math.round(H1 * position.getX() + H2 * position.getY() + H3 * position.getZ());
 
         n = n % NUM_BUCKETS;
         if (n < 0) n += NUM_BUCKETS;
 
         return n;
+
+        */
     }
 
     public void findCollisionPairs() {
+        List<Element> elements = simulation.getElements();
+        Plane plane = null;
+        for (int i = 0; i < elements.size(); i++) {
+            Element element = elements.get(i);
+
+            if (element instanceof Plane) {
+                plane = (Plane) element;
+                break;
+            }
+        }
+
         for (List<Element> list : buckets.values()) {
+            list.add(plane);
+
             for (Element firstElement : list) {
 
                 for (Element secondElement : list) {
