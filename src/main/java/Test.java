@@ -70,11 +70,11 @@ public class Test extends SimpleApplication {
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(2.0f, 0.1f, 1.0f), 0.1f));
         */
 
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                for (int z = 0; z < 3; z++) {
+        for (int x = 0; x < 1; x++) {
+            for (int y = 0; y < 1; y++) {
+                for (int z = 0; z < 30; z++) {
                     simulation.addElement(
-                            new Sphere(UUID.randomUUID().toString(), new Vector3f(0.2f * x, 0.2f * z + 0.1f, 0.2f * y), 0.1f)
+                            new Sphere(UUID.randomUUID().toString(), new Vector3f(0.2f * x, -0.4f * z + 0.1f, 0.2f * y), 0.1f)
                     );
                 }
             }

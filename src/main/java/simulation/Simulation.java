@@ -109,12 +109,17 @@ public class Simulation {
 
         //sphere5.setVelocity(new Vector3f(-0.5f, 0, 0));
 
+        //List<CollisionPair> collisionPairs = new ArrayList<>();
+
+        float sphereSpringConstant = 5000.0f;
+
+        List<CollisionPair> collisionPairs = spatialHashing.getCollisionPairs();
+
+        for (int i = 1; i < elements.size() - 1; i++) {
+            collisionPairs.add(new SphereSphereCollisionPair((Sphere) elements.get(i), (Sphere) elements.get(i + 1), timestep, sphereSpringConstant, 1, 0.01f));
+        }
+
         /*
-        List<CollisionPair> collisionPairs = new ArrayList<>();
-
-        float sphereSpringConstant = 2000.0f;
-
-        collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere1, timestep, sphereSpringConstant, 1));
         collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere2, timestep, sphereSpringConstant, 1));
         collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere3, timestep, sphereSpringConstant, 1));
         collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere4, timestep, sphereSpringConstant, 1));
@@ -143,7 +148,7 @@ public class Simulation {
         */
 
 
-        GaussSeidelIterator gs = new GaussSeidelIterator(spatialHashing.getCollisionPairs(), timestep);
+        GaussSeidelIterator gs = new GaussSeidelIterator(collisionPairs, timestep);
         gs.solve();
 
         /*

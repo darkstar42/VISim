@@ -9,18 +9,20 @@ public class SphereSphereCollisionPair extends CollisionPair {
     private Sphere element1;
 
     private float timestep;
-    private float springConstant;
-    private int iterationSteps;
+    private float distance;
 
     private float a, b, e;
 
     public SphereSphereCollisionPair(Sphere element0, Sphere element1, float timestep, float springConstant, int iterationSteps) {
+        this(element0, element1, timestep, springConstant, iterationSteps, 0.0f);
+    }
+
+    public SphereSphereCollisionPair(Sphere element0, Sphere element1, float timestep, float springConstant, int iterationSteps, float distance) {
         this.element0 = element0;
         this.element1 = element1;
 
         this.timestep = timestep;
-        this.springConstant = springConstant;
-        this.iterationSteps = iterationSteps;
+        this.distance = distance;
 
         a = 4.0f / (timestep * (1 + 4.0f * iterationSteps));
         b = (4.0f * iterationSteps) / (1 + 4.0f * iterationSteps);
@@ -150,7 +152,7 @@ public class SphereSphereCollisionPair extends CollisionPair {
                         0,
                         0,
                         0
-        });
+                });
     }
 
     public Vector3f getContactNormal() {
@@ -162,7 +164,7 @@ public class SphereSphereCollisionPair extends CollisionPair {
     }
 
     public float getOverlap() {
-        return getContactNormal().length() - getFirstElement().getRadius();
+        return getContactNormal().length() - getFirstElement().getRadius() - (distance / 2.0f);
     }
 
     public float getE() {
@@ -290,6 +292,8 @@ public class SphereSphereCollisionPair extends CollisionPair {
     }
 
     public boolean isActive() {
+        if (distance != 0.0f) return true;
+
         return getOverlap() < 0.0f;
     }
 }
