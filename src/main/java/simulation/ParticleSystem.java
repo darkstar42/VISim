@@ -23,7 +23,7 @@ public class ParticleSystem {
         void removeParticles();
     }
 
-    private List<Particle> particles;
+    private List<Element> particles;
 
     private ParticleEmitter emitter;
 
@@ -54,7 +54,7 @@ public class ParticleSystem {
         });
     }
 
-    public List<Particle> getParticles() {
+    public List<Element> getElements() {
         return particles;
     }
 
@@ -65,7 +65,7 @@ public class ParticleSystem {
     public Particle getParticle(int index) {
         if (index < 0 || index >= getNumParticles()) return null;
 
-        return particles.get(index);
+        return (Particle) particles.get(index);
     }
 
     public ParticleSimulationCallback getSimulationCallback() {
@@ -73,13 +73,13 @@ public class ParticleSystem {
     }
 
     public void resetForces() {
-        for (Particle particle : particles) {
+        for (Element particle : particles) {
             particle.resetForce();
         }
     }
 
     public void resetCollisionCandidates() {
-        for (Particle particle : particles) {
+        for (Element particle : particles) {
             particle.resetCollisionCandidates();
         }
     }
@@ -146,7 +146,7 @@ public class ParticleSystem {
 
     protected void checkParticleLifetime() {
         for (int i = 0; i < particles.size(); i++) {
-            Particle particle = particles.get(i);
+            Particle particle = (Particle) particles.get(i);
 
             if (particle.getLifetime() != -1 && particle.getAge() > particle.getLifetime()) {
                 particles.remove(i);
@@ -156,7 +156,7 @@ public class ParticleSystem {
     }
 
     public void findCollisionCandidates(List<Element> elements) {
-        for (Particle particle : particles) {
+        for (Element particle : particles) {
             for (Element element : elements) {
                 if (element instanceof Plane) {
                     float distance = element.getDistance(particle);

@@ -7,6 +7,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Texture;
 import com.jme3.util.BufferUtils;
@@ -27,7 +28,7 @@ public class Cloth extends Element {
     private Particle[][] particles;
 
     public Cloth(String id) {
-        super(id);
+        super(id, new Vector3f(0, 3.0f, 0), new Vector3f(0, 0, 0), 0.0f);
 
         init();
     }
@@ -38,7 +39,7 @@ public class Cloth extends Element {
 
         for (int y = 0; y < RESOLUTION; y++) {
             for (int x = 0; x < RESOLUTION; x++) {
-                particles[y][x] = new Particle(UUID.randomUUID().toString(), new Vector3f(x * SECTION_WIDTH, 2, y * SECTION_WIDTH), initialSpeed, PARTICLE_WEIGHT);
+                particles[y][x] = new Particle(UUID.randomUUID().toString(), getPosition().add(new Vector3f(x * SECTION_WIDTH, 0, y * SECTION_WIDTH)), initialSpeed, PARTICLE_WEIGHT);
             }
         }
 
@@ -100,7 +101,7 @@ public class Cloth extends Element {
     }
 
     @Override
-    public Geometry render(AssetManager assetManager) {
+    public Node render(AssetManager assetManager) {
         Vector3f[] vertices = getVertices();
         int[] indices = new int[2 * (RESOLUTION - 1) * (RESOLUTION - 1) * 3];
 
@@ -141,7 +142,10 @@ public class Cloth extends Element {
         geometry = new Geometry(getId(), mesh);
         geometry.setMaterial(material);
 
-        return geometry;
+        Node node = new Node("Cloth-" + getId());
+        node.attachChild(geometry);
+
+        return node;
     }
 
     @Override
@@ -167,8 +171,9 @@ public class Cloth extends Element {
         return vertices;
     }
 
-    public List<Particle> getParticles() {
-        List<Particle> particles = new ArrayList<>();
+    @Override
+    public List<Element> getElements() {
+        List<Element> particles = new ArrayList<>();
 
         for (int x = 0; x < RESOLUTION; x++) {
             for (int y = 0; y < RESOLUTION; y++) {
@@ -188,10 +193,9 @@ public class Cloth extends Element {
                 Particle particle = this.particles[y][x];
 
                 particle.update(timestep);
-
-                // TODO - remove this hack
+                
                 if (y == 0) {
-                    particle.setPosition(particle.getPosition().set(x * SECTION_WIDTH, 2.0f, y * SECTION_WIDTH));
+                    particle.setPosition(particle.getPosition().set(getPosition().add(x * SECTION_WIDTH, 0.0f, y * SECTION_WIDTH)));
                     particle.setVelocity(particle.getVelocity().set(0, 0, 0));
                 }
             }

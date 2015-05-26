@@ -21,13 +21,13 @@ public abstract class Force {
     public abstract void applyForce(Element element);
 
     /**
-     * Applies the force on the given particles
+     * Applies the force on the given list of elements
      *
-     * @param particles The particles to apply force on
+     * @param elements The elements to apply force on
      */
-    public void applyForce(List<Particle> particles) {
-        for (Particle particle : particles) {
-            applyForce(particle);
+    public void applyForce(List<Element> elements) {
+        for (Element element : elements) {
+            applyForce(element);
         }
     }
 }

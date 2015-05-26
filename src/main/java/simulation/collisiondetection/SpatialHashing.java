@@ -87,7 +87,7 @@ public class SpatialHashing {
     }
 
     private void createCollisionPair(Sphere sphere, Plane plane) {
-        CollisionPair collisionPair = new SpherePlaneCollisionPair(sphere, plane, simulation.getTimestep(), 500.0f, 1);
+        CollisionPair collisionPair = new SpherePlaneCollisionPair(sphere, plane, simulation.getTimestep(), 20.0f, 1);
 
         sphere.addCollisionPair(collisionPair);
         plane.addCollisionPair(collisionPair);
@@ -98,9 +98,17 @@ public class SpatialHashing {
         List<Element> elements = simulation.getElements();
 
         for (Element element : elements) {
-            int bucketIndex = getBucketIndex(element.getPosition());
+            if (element.getElements().size() > 0) {
+                for (Element innerElement : element.getElements()) {
+                    int bucketIndex = getBucketIndex(innerElement.getPosition());
 
-            addToBucket(bucketIndex, element);
+                    addToBucket(bucketIndex, innerElement);
+                }
+            } else {
+                int bucketIndex = getBucketIndex(element.getPosition());
+
+                addToBucket(bucketIndex, element);
+            }
         }
     }
 

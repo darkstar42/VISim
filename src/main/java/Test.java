@@ -16,7 +16,9 @@ import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer;
 import simulation.Simulation;
+import simulation.element.Cloth;
 import simulation.element.Plane;
+import simulation.element.Rope;
 import simulation.element.Sphere;
 import simulation.force.AirFriction;
 import simulation.force.Gravity;
@@ -70,6 +72,7 @@ public class Test extends SimpleApplication {
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(2.0f, 0.1f, 1.0f), 0.1f));
         */
 
+        /*
         for (int x = 0; x < 1; x++) {
             for (int y = 0; y < 1; y++) {
                 for (int z = 0; z < 30; z++) {
@@ -79,9 +82,12 @@ public class Test extends SimpleApplication {
                 }
             }
         }
+        */
+
+        //simulation.addElement(new Rope(UUID.randomUUID().toString(), new Vector3f(0, 3.0f, 0), 20));
 
 
-        //simulation.addElement(new Cloth(UUID.randomUUID().toString()));
+        simulation.addElement(new Cloth(UUID.randomUUID().toString()));
         //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
         /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(

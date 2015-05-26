@@ -2,7 +2,7 @@ package simulation.element;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import org.jblas.FloatMatrix;
 import org.jblas.Solve;
 import simulation.spook.CollisionPair;
@@ -157,7 +157,7 @@ public abstract class Element {
         setVelocity(newVelocity);
     }
 
-    public abstract Geometry render(AssetManager assetManager);
+    public abstract Node render(AssetManager assetManager);
 
     public abstract void draw();
 
@@ -183,5 +183,12 @@ public abstract class Element {
 
     public void resetCollisionPairs() {
         collisionPairs.clear();
+    }
+
+    public List<Element> getElements() {
+        List<Element> elements = new ArrayList<>(1);
+        elements.add(this);
+
+        return elements;
     }
 }

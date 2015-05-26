@@ -69,8 +69,6 @@ public class GaussSeidelIterator {
                     v_i = v_i.add(d_i);
                     v_j = v_j.add(d_j);
 
-                    //System.out.println(v_i);
-
                     collisionPair.getFirstElement().setVelocity(collisionPair.getFirstElement().getVelocity().add(new Vector3f(v_i.get(0), v_i.get(1), v_i.get(2))));
                     collisionPair.getSecondElement().setVelocity(collisionPair.getSecondElement().getVelocity().add(new Vector3f(v_j.get(0), v_j.get(1), v_j.get(2))));
                 }

@@ -6,6 +6,7 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import org.jblas.FloatMatrix;
 
 public class Sphere extends Element {
@@ -28,7 +29,7 @@ public class Sphere extends Element {
     }
 
     @Override
-    public Geometry render(AssetManager assetManager) {
+    public Node render(AssetManager assetManager) {
         Material material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         material.setBoolean("UseMaterialColors", false);
         //material.setColor("GlowColor",ColorRGBA.White);
@@ -44,7 +45,10 @@ public class Sphere extends Element {
         //geometry.rotate((float) (-0.5f * Math.PI), 0, 0);
         //geometry.setLocalTranslation(-1.0f * radius / 2.0f, 0, radius / 2.0f);
 
-        return geometry;
+        Node node = new Node("Sphere-" + getId());
+        node.attachChild(geometry);
+
+        return node;
     }
 
     @Override

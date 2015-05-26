@@ -7,6 +7,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import org.jblas.FloatMatrix;
 
@@ -27,7 +28,7 @@ public class Plane extends Element {
     }
 
     @Override
-    public Geometry render(AssetManager assetManager) {
+    public Node render(AssetManager assetManager) {
         Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         material.setColor("Color", new ColorRGBA(0.3f, 0.3f, 0.3f, 0.25f));
         material.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
@@ -55,7 +56,10 @@ public class Plane extends Element {
 
         geometry.setLocalRotation(new Quaternion().fromAngleAxis(rotationAngle, rotationAxis));
 
-        return geometry;
+        Node node = new Node("Plane-" + getId());
+        node.attachChild(geometry);
+
+        return node;
     }
 
     @Override

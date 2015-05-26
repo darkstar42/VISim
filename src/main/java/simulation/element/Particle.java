@@ -3,6 +3,7 @@ package simulation.element;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import simulation.force.DampedSpring;
 
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class Particle extends Element {
     */
 
     @Override
-    public Geometry render(AssetManager assetManager) {
+    public Node render(AssetManager assetManager) {
         // Intentionally left blank
         return null;
     }

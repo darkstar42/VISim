@@ -1,19 +1,12 @@
 package simulation;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.PointLight;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import simulation.collisiondetection.SpatialHashing;
 import simulation.element.*;
 import simulation.force.Force;
 import simulation.spook.CollisionPair;
 import simulation.spook.GaussSeidelIterator;
-import simulation.spook.SpherePlaneCollisionPair;
-import simulation.spook.SphereSphereCollisionPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,18 +67,14 @@ public class Simulation {
 
         for (Element element : elements) {
             for (Force force : forces) {
-                if (element instanceof Cloth) {
-                    force.applyForce(((Cloth) element).getParticles());
-                } else {
-                    force.applyForce(element);
-                }
+                force.applyForce(element.getElements());
             }
         }
 
         // Accumulate external forces (e.g. gravity)
         for (ParticleSystem particleSystem : particleSystems) {
             for (Force force : forces) {
-                force.applyForce(particleSystem.getParticles());
+                force.applyForce(particleSystem.getElements());
             }
         }
 
@@ -99,6 +88,7 @@ public class Simulation {
         spatialHashing.hash();
         spatialHashing.findCollisionPairs();
 
+        /*
         Plane plane = (Plane) elements.get(0);
         Sphere sphere0 = (Sphere) elements.get(1);
         Sphere sphere1 = (Sphere) elements.get(2);
@@ -106,18 +96,20 @@ public class Simulation {
         Sphere sphere3 = (Sphere) elements.get(4);
         Sphere sphere4 = (Sphere) elements.get(5);
         Sphere sphere5 = (Sphere) elements.get(6);
+        */
 
         //sphere5.setVelocity(new Vector3f(-0.5f, 0, 0));
 
         //List<CollisionPair> collisionPairs = new ArrayList<>();
 
         float sphereSpringConstant = 5000.0f;
-
         List<CollisionPair> collisionPairs = spatialHashing.getCollisionPairs();
 
+        /*
         for (int i = 1; i < elements.size() - 1; i++) {
             collisionPairs.add(new SphereSphereCollisionPair((Sphere) elements.get(i), (Sphere) elements.get(i + 1), timestep, sphereSpringConstant, 1, 0.01f));
         }
+        */
 
         /*
         collisionPairs.add(new SphereSphereCollisionPair(sphere0, sphere2, timestep, sphereSpringConstant, 1));
@@ -151,18 +143,12 @@ public class Simulation {
         GaussSeidelIterator gs = new GaussSeidelIterator(collisionPairs, timestep);
         gs.solve();
 
-        /*
-        Spook spook = new Spook(timestep, elements);
-
-        spook.solve(plane, sphere);
-        */
-
         // Take a timestep
         time += timestep;
 
         // Integrate using leap frog
         for (ParticleSystem particleSystem : particleSystems) {
-            updateParticles(particleSystem.getParticles());
+            updateParticles(particleSystem.getElements());
         }
 
         for (Element element : elements) {
@@ -229,8 +215,8 @@ public class Simulation {
         element.update(timestep);
     }
 
-    protected void updateParticles(List<Particle> particles) {
-        for (Particle particle : particles) {
+    protected void updateParticles(List<Element> particles) {
+        for (Element particle : particles) {
             updateElement(particle);
         }
     }
