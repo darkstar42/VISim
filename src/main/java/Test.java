@@ -27,11 +27,6 @@ import simulation.force.Gravity;
 
 import java.util.UUID;
 
-/**
- * Sample 1 - how to get started with the most simple JME 3 application.
- * Display a blue 3D cube and view from all sides by
- * moving the mouse and pressing the WASD keys.
- */
 public class Test extends SimpleApplication {
     Simulation simulation;
 
@@ -88,14 +83,11 @@ public class Test extends SimpleApplication {
 
         /*
         Rope rope = new Rope(UUID.randomUUID().toString(), new Vector3f(0, 5.0f, 0), 10);
-        rope.getElement(9).setMass(0.4f);
+        rope.getElement(9).setMass(1.0f);
         simulation.addElement(rope);
         */
 
-
-
         simulation.addElement(new Cloth(UUID.randomUUID().toString()));
-        //simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter()));
 
         /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(
@@ -107,7 +99,6 @@ public class Test extends SimpleApplication {
                 0.4f
         )));
         */
-
 
         /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(

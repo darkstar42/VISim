@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
-    public static float PARTICLE_WEIGHT = 0.2f;
+    public static float PARTICLE_WEIGHT = 0.08f;
     public static float SECTION_WIDTH = 0.05f;
     public static int RESOLUTION = 50;
 
@@ -28,7 +28,7 @@ public class Cloth extends Element {
     private Particle[][] particles;
 
     public Cloth(String id) {
-        super(id, new Vector3f(0, 3.0f, 0), new Vector3f(0, 0, 0), 0.0f);
+        super(id, new Vector3f(0, 4.0f, 0), new Vector3f(0, 0, 0), 0.0f);
 
         init();
     }
@@ -66,24 +66,24 @@ public class Cloth extends Element {
                 if (y < RESOLUTION - 1) {
                     if (x > 0) {
                         Particle diagLeftParticle = particles[y + 1][x - 1];
-                        particle.addSpringForce(new DampedSpring(particle, diagLeftParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0)), 5f, 500.0f));
+                        particle.addSpringForce(new DampedSpring(particle, diagLeftParticle, (float) (8 * SECTION_WIDTH * Math.sqrt(2.0)), 5f, 100.0f));
                     }
 
                     if (x < RESOLUTION - 1) {
                         Particle diagRightParticle = particles[y + 1][x + 1];
-                        particle.addSpringForce(new DampedSpring(particle, diagRightParticle, (float) (SECTION_WIDTH * Math.sqrt(2.0)), 5f, 500.0f));
+                        particle.addSpringForce(new DampedSpring(particle, diagRightParticle, (float) (8 * SECTION_WIDTH * Math.sqrt(2.0)), 5f, 100.0f));
                     }
                 }
 
                 // Add bending springs
                 if (y < RESOLUTION - 2) {
                     Particle upperBendingParticle = particles[y + 2][x];
-                    particle.addSpringForce(new DampedSpring(particle, upperBendingParticle, 2.0f * SECTION_WIDTH, 5f, 500.0f));
+                    particle.addSpringForce(new DampedSpring(particle, upperBendingParticle, 2.0f * SECTION_WIDTH, 5f, 100.0f));
                 }
 
                 if (x < RESOLUTION - 2) {
                     Particle rightBendingParticle = particles[y][x + 2];
-                    particle.addSpringForce(new DampedSpring(particle, rightBendingParticle, 2.0f * SECTION_WIDTH, 5f, 500.0f));
+                    particle.addSpringForce(new DampedSpring(particle, rightBendingParticle, 2.0f * SECTION_WIDTH, 5f, 100.0f));
                 }
             }
         }
