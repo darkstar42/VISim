@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Cloth extends Element {
-    public static float PARTICLE_WEIGHT = 0.1f;
+    public static float PARTICLE_WEIGHT = 0.2f;
     public static float SECTION_WIDTH = 0.05f;
     public static int RESOLUTION = 50;
 
@@ -117,12 +117,12 @@ public class Cloth extends Element {
             }
         }
 
-        Vector2f[] texCoord = new Vector2f[(RESOLUTION - 1) * (RESOLUTION - 1)];
+        Vector2f[] texCoord = new Vector2f[RESOLUTION * RESOLUTION];
 
-        for (int y = 0; y < (RESOLUTION - 1); y++) {
-            for (int x = 0; x < (RESOLUTION - 1); x++) {
-                texCoord[x * (RESOLUTION - 1) + y
-                        ] = new Vector2f(x * (1.0f / RESOLUTION), y * (1.0f / RESOLUTION));
+        for (int y = 0; y < (RESOLUTION); y++) {
+            for (int x = 0; x < (RESOLUTION); x++) {
+                texCoord[y * (RESOLUTION) + x
+                        ] = new Vector2f(y * (1.0f / RESOLUTION), x * (1.0f / RESOLUTION));
             }
         }
 

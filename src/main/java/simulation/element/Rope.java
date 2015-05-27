@@ -91,4 +91,8 @@ public class Rope extends Element {
             element.resetForce();
         }
     }
+
+    public Element getElement(int i) {
+        return elements.get(i);
+    }
 }
