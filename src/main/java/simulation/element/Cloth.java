@@ -193,7 +193,7 @@ public class Cloth extends Element {
                 Particle particle = this.particles[y][x];
 
                 particle.update(timestep);
-                
+
                 if (y == 0) {
                     particle.setPosition(particle.getPosition().set(getPosition().add(x * SECTION_WIDTH, 0.0f, y * SECTION_WIDTH)));
                     particle.setVelocity(particle.getVelocity().set(0, 0, 0));

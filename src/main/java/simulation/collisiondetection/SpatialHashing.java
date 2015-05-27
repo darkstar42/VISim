@@ -87,7 +87,7 @@ public class SpatialHashing {
     }
 
     private void createCollisionPair(Sphere sphere, Plane plane) {
-        CollisionPair collisionPair = new SpherePlaneCollisionPair(sphere, plane, simulation.getTimestep(), 20.0f, 1);
+        CollisionPair collisionPair = new SpherePlaneCollisionPair(sphere, plane, simulation.getTimestep(), 100.0f, 1);
 
         sphere.addCollisionPair(collisionPair);
         plane.addCollisionPair(collisionPair);
