@@ -69,17 +69,16 @@ public class Test extends SimpleApplication {
         simulation.addElement(new Sphere(UUID.randomUUID().toString(), new Vector3f(2.0f, 0.1f, 1.0f), 0.1f));
         */
 
-        /*
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
                 for (int z = 0; z < 5; z++) {
                     simulation.addElement(
-                            new Sphere(UUID.randomUUID().toString(), new Vector3f(0.2f * x, 0.2f * z + 0.1f, 0.2f * y), 0.1f)
+                            new Sphere(UUID.randomUUID().toString(), new Vector3f(0.2f * x, 0.4f * z + 0.1f, 0.2f * y), 0.1f)
                     );
                 }
             }
         }
-        */
+
 
         /*
         Rope rope = new Rope(UUID.randomUUID().toString(), new Vector3f(0, 5.0f, 0), 10);
@@ -87,7 +86,7 @@ public class Test extends SimpleApplication {
         simulation.addElement(rope);
         */
 
-        simulation.addElement(new Cloth(UUID.randomUUID().toString()));
+        //simulation.addElement(new Cloth(UUID.randomUUID().toString()));
 
         /*
         simulation.addParticleSystem(new ParticleSystem(new PointParticleEmitter(

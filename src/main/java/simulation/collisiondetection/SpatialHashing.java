@@ -34,16 +34,28 @@ public class SpatialHashing {
     }
 
     private int getBucketIndex(Vector3f position) {
-        return 0;
-        /*
-        int n = Math.round(H1 * position.getX() + H2 * position.getY() + H3 * position.getZ());
+        int n = Math.round(H1 * Math.round(position.getX()) + H2 * Math.round(position.getY()) + H3 * Math.round(position.getZ()));
 
         n = n % NUM_BUCKETS;
         if (n < 0) n += NUM_BUCKETS;
 
         return n;
+    }
 
-        */
+    private int[] getBucketIndices(Vector3f position) {
+        int[] indices = new int[9];
+        int i = 0;
+
+        for (int z = -1; z < 1; z++) {
+            for (int y = -1; y < 1; y++) {
+                for (int x = -1; x < 1; x++) {
+                    indices[i] = getBucketIndex(position.add(new Vector3f(0.5f * x, 0.5f * y, 0.5f * z)));
+                    i++;
+                }
+            }
+        }
+
+        return indices;
     }
 
     public void findCollisionPairs() {
@@ -79,7 +91,7 @@ public class SpatialHashing {
     }
 
     private void createCollisionPair(Sphere sphereA, Sphere sphereB) {
-        CollisionPair collisionPair = new SphereSphereCollisionPair(sphereA, sphereB, simulation.getTimestep(), 5000.0f, 3);
+        CollisionPair collisionPair = new SphereSphereCollisionPair(sphereA, sphereB, simulation.getTimestep(), 10000.0f, 3);
 
         sphereA.addCollisionPair(collisionPair);
         sphereB.addCollisionPair(collisionPair);
@@ -87,7 +99,7 @@ public class SpatialHashing {
     }
 
     private void createCollisionPair(Sphere sphere, Plane plane) {
-        CollisionPair collisionPair = new SpherePlaneCollisionPair(sphere, plane, simulation.getTimestep(), 100.0f, 3);
+        CollisionPair collisionPair = new SpherePlaneCollisionPair(sphere, plane, simulation.getTimestep(), 10000.0f, 3);
 
         sphere.addCollisionPair(collisionPair);
         plane.addCollisionPair(collisionPair);
@@ -100,15 +112,21 @@ public class SpatialHashing {
         for (Element element : elements) {
             if (element.getElements().size() > 0) {
                 for (Element innerElement : element.getElements()) {
-                    int bucketIndex = getBucketIndex(innerElement.getPosition());
+                    int[] bucketIndices = getBucketIndices(innerElement.getPosition());
 
-                    addToBucket(bucketIndex, innerElement);
+                    addToBucket(bucketIndices, innerElement);
                 }
             } else {
-                int bucketIndex = getBucketIndex(element.getPosition());
+                int[] bucketIndices = getBucketIndices(element.getPosition());
 
-                addToBucket(bucketIndex, element);
+                addToBucket(bucketIndices, element);
             }
+        }
+    }
+
+    private void addToBucket(int[] bucketIndices, Element element) {
+        for (int i = 0; i < bucketIndices.length; i++) {
+            addToBucket(bucketIndices[i], element);
         }
     }
 
